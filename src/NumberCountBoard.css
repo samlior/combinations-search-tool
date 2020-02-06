@@ -1,0 +1,52 @@
+.div-number-count-board
+{
+    background-color: rgb(29,30,32);
+    padding: 15px;
+    border-radius: 20px;
+    border: none;
+    width: 250px;
+    margin-left: 15px;
+    margin-top: 15px;
+}
+
+.div-number-count-board-line
+{
+    margin-top: 10px;
+}
+
+.input-number-number-count-board
+{
+    outline: none;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    width: 35%;
+    text-align: center;
+    position: relative;
+    top: -2px;
+    margin-left: 5px;
+}
+
+.button-number-count-board
+{
+    width: 20%;
+    margin-left: 3px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    outline:none;
+    border: none;
+    color: rgb(32,33,36);
+    background-color: rgb(80,250,123);
+    padding: 3px;
+    font-weight: bold;
+}
+
+.button-number-count-board:hover
+{
+    background-color: rgb(5, 179, 48);
+}
+
+.button-number-count-board:active
+{
+    background-color: rgb(26,27,29);
+    color: white;
+}

@@ -1,0 +1,99 @@
+.div-number-selector-visible,.div-number-selector-invisible
+{
+    background-color: rgb(29,30,32);
+    padding: 15px;
+    border-radius: 20px;
+    border: none;
+    width: 250px;
+    display: inline-block;
+    margin-left: 15px;
+    margin-top: 15px;
+    position: relative;
+}
+
+.div-number-selector-invisible:hover
+{
+    background-color: rgb(54, 56, 59);
+}
+
+.div-number-selector-invisible:active
+{
+    background-color: rgb(26,27,29);
+}
+
+#img-number-selector-add
+{
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+}
+
+.button-number-selector-all,.button-number-selector-clear,.button-number-selector-delete
+{
+    outline:none;
+    border: none;
+    color: rgb(32,33,36);
+    background-color: rgb(80,250,123);
+    padding: 3px;
+    font-weight: bold;
+    width: 30%;
+    margin-top: 15px;
+}
+
+.button-number-selector-all
+{
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.button-number-selector-clear
+{
+    margin-left: 3px;
+}
+
+.button-number-selector-delete
+{
+    margin-left: 3px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.button-number-selector-all:hover,.button-number-selector-clear:hover,.button-number-selector-delete:hover
+{
+    background-color: rgb(5, 179, 48);
+}
+
+.button-number-selector-all:active,.button-number-selector-clear:active,.button-number-selector-delete:active
+{
+    background-color: rgb(26,27,29);
+    color: white;
+}
+
+.input-text-number-selector
+{
+    outline: none;
+    border-radius: 20px;
+    width: 20%;
+    text-align: center;
+}
+
+.div-input-number-selector
+{
+    margin-top: 15px;
+    width: 100%;
+}
+
+.div-number-selector-helper-invisible,.img-number-selector-helper-invisible
+{
+    visibility: hidden;
+}

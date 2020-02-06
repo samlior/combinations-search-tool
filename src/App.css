@@ -1,0 +1,13 @@
+.div-app
+{
+    width: 100%;
+    height: 100%;
+}
+
+.div-app-sep
+{
+    margin-top: 20px;
+    width: 100%;
+    height: 2px;
+    background-color: rgb(80,250,123);
+}

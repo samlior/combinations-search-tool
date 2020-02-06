@@ -1,0 +1,42 @@
+.div-settings-board
+{
+    background-color: rgb(29,30,32);
+    padding: 15px;
+    border-radius: 20px;
+    border: none;
+    width: 250px;
+    margin-left: 15px;
+    margin-top: 15px;
+}
+
+.input-number-settings-board
+{
+    outline: none;
+    border-radius: 20px;
+    width: 50%;
+    text-align: center;
+}
+
+.button-settings-board
+{
+    outline:none;
+    border: none;
+    color: rgb(32,33,36);
+    background-color: rgb(80,250,123);
+    padding: 3px;
+    font-weight: bold;
+    width: 90%;
+    margin-top: 15px;
+    border-radius: 20px;
+}
+
+.button-settings-board:hover
+{
+    background-color: rgb(5, 179, 48);
+}
+
+.button-settings-board:active
+{
+    background-color: rgb(26,27,29);
+    color: white;
+}
