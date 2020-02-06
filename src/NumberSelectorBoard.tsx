@@ -19,11 +19,15 @@ export class NumberSelectorBoard extends React.Component<any, any> {
                     selectedStatus={this.props.totalSelectedStatus[i]}
                     maxNumber={this.props.maxNumber}
                     selectCount={this.props.selectCount}
+                    selectMin={this.props.totalSelectedRange[i][0]}
+                    selectMax={this.props.totalSelectedRange[i][1]}
                     onNumberSelected={this.props.onNumberSelected}
                     onNumberSelectedAll={this.props.onNumberSelectedAll}
                     onNumberSelectedClear={this.props.onNumberSelectedClear}
                     onNumberSelectedDelete={this.props.onNumberSelectedDelete}
-                    onNumberSelectedAdd={this.props.onNumberSelectedAdd} />
+                    onNumberSelectedAdd={this.props.onNumberSelectedAdd}
+                    onSelectMinChange={this.props.onSelectMinChange}
+                    onSelectMaxChange={this.props.onSelectMaxChange} />
             )
         }
 

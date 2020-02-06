@@ -1,4 +1,5 @@
-import { dialog, BrowserWindow, shell } from "electron";
+import { dialog, BrowserWindow } from "electron";
+import * as path from 'path'
 import * as fs from 'fs';
 
 function fillString(str: string, n: number): string {
@@ -24,6 +25,8 @@ function getCurrentTime(): string {
         fillString(hh, 2) + sep2 + fillString(mm, 2) + sep2 + fillString(ss, 2);
     return currentdate;
 }
+
+let modalWin: BrowserWindow = null
 
 let api = {
     messageDialog: (reply, title: string, message: string) => {
@@ -56,6 +59,29 @@ let api = {
             response.msg = "unkonw err"
             return reply(response)
         })
+    },
+    modalShow: (reply) => {
+        if (modalWin === null) {
+            modalWin = new BrowserWindow({
+                width: 400,
+                height: 320,
+                parent: BrowserWindow.getFocusedWindow(),
+                modal: true,
+                frame: false
+            });
+
+            modalWin.on('close', () => { modalWin = null })
+            modalWin.loadURL(path.join('file://', __dirname, '../src-electron/modal.html'))
+            modalWin.show()
+        }
+        reply({success: true})
+    },
+    modalClose: (reply) => {
+        if (modalWin !== null) {
+            modalWin.close()
+            modalWin = null
+        }
+        reply({success: true})
     }
 }
 

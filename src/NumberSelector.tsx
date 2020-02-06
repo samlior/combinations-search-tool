@@ -18,6 +18,8 @@ export class NumberSelector extends React.Component<any, any> {
         this.handleSelectedClearClick = this.handleSelectedClearClick.bind(this)
         this.handleSelectedDeleteClick = this.handleSelectedDeleteClick.bind(this)
         this.handleDivClick = this.handleDivClick.bind(this)
+        this.handleSelectMinChange = this.handleSelectMinChange.bind(this)
+        this.handleSelectMaxChange = this.handleSelectMaxChange.bind(this)
     }
 
     handleChange(event: any) {
@@ -41,6 +43,14 @@ export class NumberSelector extends React.Component<any, any> {
         if (!this.props.show) {
             this.props.onNumberSelectedAdd()
         }
+    }
+
+    handleSelectMinChange(event: any) {
+        this.props.onSelectMinChange(this.props.index, Number(event.target.value))
+    }
+
+    handleSelectMaxChange(event: any) {
+        this.props.onSelectMaxChange(this.props.index, Number(event.target.value))
     }
 
     render() {
@@ -71,8 +81,8 @@ export class NumberSelector extends React.Component<any, any> {
                     {checkBoxs}
                     <div className="div-input-number-selector">
                     有  <input className="input-text-number-selector" 
-                        type="number" min="0" max={this.props.maxNumber}/> --- <input className="input-text-number-selector" 
-                        type="number" min="0" max={this.props.maxNumber}/>  个
+                        type="number" min="0" max={this.props.selectCount} value={this.props.selectMin} onChange={this.handleSelectMinChange}/> —— <input className="input-text-number-selector" 
+                        type="number" min="0" max={this.props.selectCount} value={this.props.selectMax} onChange={this.handleSelectMaxChange}/>  个
                     </div>
                     <button className="button-number-selector-all" onClick={this.handleSelectedAllClick}>全选</button>
                     <button className="button-number-selector-clear" onClick={this.handleSelectedClearClick}>清空</button>

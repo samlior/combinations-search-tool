@@ -1,4 +1,4 @@
-import { app, Menu, BrowserWindow, ipcMain, dialog } from "electron";
+import { app, Menu, BrowserWindow, ipcMain, dialog, MouseWheelInputEvent  } from "electron";
 import * as path from "path";
 import { api } from './api'
 
@@ -9,7 +9,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     height: 600,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      zoomFactor: 1.0
     },
     width: 800,
   });
@@ -24,6 +25,18 @@ function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+
+  // 设置缩放.
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.on('zoom-changed', (event, zoomDirection: string) => {
+      if (zoomDirection === "in") {
+        mainWindow.webContents.zoomFactor += 0.1
+      }
+      else {
+        mainWindow.webContents.zoomFactor -= 0.1
+      }
+    })
+  })
 }
 
 // This method will be called when Electron has finished

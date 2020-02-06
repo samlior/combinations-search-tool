@@ -4,8 +4,11 @@ import "./App.css"
 import { NumberSelectorBoard  } from './NumberSelectorBoard'
 import { SettingsBoard } from './SettingsBoard'
 import { NumberCountBoard } from './NumberCountBoard'
+import { ResultsBoard } from './ResultsBoard'
 
 import { ipc } from './ipc'
+
+import * as search from './search'
 
 export class App extends React.Component<any, any> {
 
@@ -17,6 +20,9 @@ export class App extends React.Component<any, any> {
     this.handleNumberSelectedClear = this.handleNumberSelectedClear.bind(this)
     this.handleNumberSelectedDelete = this.handleNumberSelectedDelete.bind(this)
     this.handleNumberSelectedAdd = this.handleNumberSelectedAdd.bind(this)
+    this.hanldeSelectMinChange = this.hanldeSelectMinChange.bind(this)
+    this.hanldeSelectMaxChange = this.hanldeSelectMaxChange.bind(this)
+
     this.handleTotalCountChange = this.handleTotalCountChange.bind(this)
     this.handleSelectCountChange = this.handleSelectCountChange.bind(this)
     this.handleSettingsConfirm = this.handleSettingsConfirm.bind(this)
@@ -33,18 +39,34 @@ export class App extends React.Component<any, any> {
     this.handleCompositeClear = this.handleCompositeClear.bind(this)
     this.handleLinkingClear = this.handleLinkingClear.bind(this)
 
+    this.handleStart = this.handleStart.bind(this)
+    this.handleResultAdd = this.handleResultAdd.bind(this)
+    this.handleResultReduce = this.handleResultReduce.bind(this)
+    this.handlePageRowCountChange = this.handlePageRowCountChange.bind(this)
+    this.hanldePageIndexChange = this.hanldePageIndexChange.bind(this)
+
+    this.handleResultFirst = this.handleResultFirst.bind(this)
+    this.handleResultPrevious = this.handleResultPrevious.bind(this)
+    this.handleResultNext = this.handleResultNext.bind(this)
+    this.handleResultLast = this.handleResultLast.bind(this)
+
     this.state = {
       totalSelectedStatus: [],
+      totalSelectedRange: [],
       rulesCount: 1,
-      maxNumber: 33,
-      selectCount: 6,
-      tmpMaxNumber: 33,
-      tmpSelectCount: 6,
+      maxNumber: search.total_count,
+      selectCount: search.selected_count,
+      tmpMaxNumber: search.total_count,
+      tmpSelectCount: search.selected_count,
       odd: "",
       even: "",
       prime: "",
       composite: "",
-      linking: ""
+      linking: "",
+      resultPageCount: 2,
+      resultRowEachPage: 40,
+      resultPageIndex: 1,
+      totalResults: []
     }
 
     for (let i = 0; i < this.state.rulesCount; i++) {
@@ -53,7 +75,30 @@ export class App extends React.Component<any, any> {
         selectedStatus.push(false)
       }
       this.state.totalSelectedStatus.push(selectedStatus)
+
+      let selectedRange = ["", ""]
+      this.state.totalSelectedRange.push(selectedRange)
     }
+  }
+
+  hanldeSelectMinChange(selectorIndex, num: number) {
+    let state = this.state
+    if (selectorIndex >= state.totalSelectedRange.length) {
+      return
+    }
+
+    state.totalSelectedRange[selectorIndex][0] = num
+    this.setState(state)
+  }
+
+  hanldeSelectMaxChange(selectorIndex, num: number) {
+    let state = this.state
+    if (selectorIndex >= state.totalSelectedRange.length) {
+      return
+    }
+
+    state.totalSelectedRange[selectorIndex][1] = num
+    this.setState(state)
   }
 
   hanldeNumberSelected(selectorIndex, num, checked) {
@@ -87,6 +132,9 @@ export class App extends React.Component<any, any> {
     for (let i = 0; i < state.totalSelectedStatus[selectorIndex].length; i++) {
       state.totalSelectedStatus[selectorIndex][i] = false
     }
+
+    state.totalSelectedRange[selectorIndex][0] = ""
+    state.totalSelectedRange[selectorIndex][1] = ""
     this.setState(state)
   }
 
@@ -97,12 +145,15 @@ export class App extends React.Component<any, any> {
     }
 
     let newArr: boolean[][] = []
+    let newArr2: number[][] = []
     for (let i = 0; i < state.totalSelectedStatus.length; i++) {
       if (i === selectorIndex)
         continue
       newArr.push(state.totalSelectedStatus[i])
+      newArr2.push(state.totalSelectedRange[i])
     }
     state.totalSelectedStatus = newArr
+    state.totalSelectedRange = newArr2
 
     if (state.rulesCount > 0) {
       state.rulesCount -= 1
@@ -118,6 +169,7 @@ export class App extends React.Component<any, any> {
       newArr.push(false)
     }
     state.totalSelectedStatus.push(newArr)
+    state.totalSelectedRange.push(["", ""])
     state.rulesCount += 1
     this.setState(state)
   }
@@ -147,6 +199,11 @@ export class App extends React.Component<any, any> {
         ipc.apiSend("messageDialog", "警告", "输入参数非法, 请重新输入!")
         return
     }
+    if (state.tmpMaxNumber > 100) {
+        ipc.apiSend("messageDialog", "警告", "最大数字总数只支持100")
+        return
+    }
+
     state.maxNumber = state.tmpMaxNumber
     state.selectCount = state.tmpSelectCount
 
@@ -157,6 +214,9 @@ export class App extends React.Component<any, any> {
         selectedStatus.push(false)
       }
       state.totalSelectedStatus.push(selectedStatus)
+
+      state.totalSelectedRange[i][0] = ""
+      state.totalSelectedRange[i][1] = ""
     }
 
     state.odd = ""
@@ -164,6 +224,9 @@ export class App extends React.Component<any, any> {
     state.prime = ""
     state.composite = ""
     state.linking = ""
+    state.totalResults = []
+
+    search.reset(state.selectCount, state.maxNumber)
 
     this.setState(state)
   }
@@ -220,6 +283,157 @@ export class App extends React.Component<any, any> {
     this.setState(state)
   }
 
+  handleResultAdd() {
+    let state: any = this.state
+    state.resultPageCount++
+    this.setState(state)
+  }
+
+  handleResultReduce() {
+    let state: any = this.state
+    if (state.resultPageCount >= 2) {
+      state.resultPageCount--
+      this.setState(state)
+    }
+  }
+
+  handlePageRowCountChange(event: any) {
+    let state: any = this.state
+    let num: number = Number(event.target.value)
+    if (num === state.resultRowEachPage || num < 1) {
+      return
+    }
+    state.resultRowEachPage = Number(event.target.value)
+    this.setState(state)
+  }
+
+  hanldePageIndexChange(event: any) {
+    let state: any = this.state
+    let num: number = Number(event.target.value)
+    if (num === state.resultPageIndex || num < 1 ||
+      num > Math.ceil(this.state.totalResults.length / this.state.resultRowEachPage)) {
+      return
+    }
+    state.resultPageIndex = num
+    this.setState(state)
+  }
+
+  handleResultFirst() {
+    let event = {
+      target: {
+        value: 1
+      }
+    }
+    this.hanldePageIndexChange(event)
+  }
+
+  handleResultPrevious() {
+    let event = {
+      target: {
+        value: this.state.resultPageIndex - 1
+      }
+    }
+    this.hanldePageIndexChange(event)
+  }
+
+  handleResultNext() {
+    let event = {
+      target: {
+        value: this.state.resultPageIndex + 1
+      }
+    }
+    this.hanldePageIndexChange(event)
+  }
+
+  handleResultLast() {
+    let event = {
+      target: {
+        value: Math.ceil(this.state.totalResults.length / this.state.resultRowEachPage)
+      }
+    }
+    this.hanldePageIndexChange(event)
+  }
+
+  handleStart() {
+
+    let rules: search.search_rule[] = []
+    for (let i = 0; i < this.state.totalSelectedStatus.length; i++) {
+      let rule: search.search_rule = new search.search_rule()
+      for (let j = 1; j <= this.state.totalSelectedStatus[i].length; j++) {
+        if (this.state.totalSelectedStatus[i][j - 1]) {
+          rule.nums.push(j)
+        }
+      }
+      if (rule.nums.length === 0) {
+        continue
+      }
+
+      if (this.state.totalSelectedRange[i][0] === "" || this.state.totalSelectedRange[i][1] === "" ||
+        this.state.totalSelectedRange[i][0] > this.state.totalSelectedRange[i][1]) {
+        ipc.apiSend("messageDialog", "警告", `条件${i + 1}的范围非法, 请重新输入!`)
+        return
+      }
+
+      rule.show_count_min = Number(this.state.totalSelectedRange[i][0])
+      rule.show_count_max = Number(this.state.totalSelectedRange[i][1])
+      rules.push(rule)
+    }
+
+    let _odd: number = this.state.odd === "" ? -1 : Number(this.state.odd)
+    let _even: number = this.state.even === "" ? -1 : Number(this.state.even)
+    let _prime: number = this.state.prime === "" ? -1 : Number(this.state.prime)
+    let _composite: number = this.state.composite === "" ? -1 : Number(this.state.composite)
+    let _linking: number = this.state.linking === "" ? -1 : Number(this.state.linking)
+
+    ipc.api("modalShow")
+    if (!search.is_init()) {
+      search.init()
+    }
+
+    let state: any = this.state
+    state.totalResults = search.search(_odd, _even, _prime, _composite, _linking, rules)
+    if (state.totalResults === null) {
+      state.totalResults = []
+      ipc.api("modalClose")
+      ipc.apiSend("messageDialog", "警告", `输入条件缺失, 请重新输入!`)
+      return
+    }
+    ipc.apiSend("modalClose")
+
+    this.setState(state)
+  }
+
+  makeResultLine(result: number[]): string {
+    if (result.length === 0) {
+      return ""
+    }
+
+    let str: string = ""
+    for (let num of result) {
+      str += `${num}, `
+    }
+    return str.substr(0, str.length - 2)
+  }
+
+  makeResults(): string[] {
+    let pageIndex = this.state.resultPageIndex - 1
+    let state: any = this.state
+    let results: string[] = []
+    let index: number = pageIndex * state.resultRowEachPage
+    while (results.length < state.resultPageCount) {
+      let result: string = ""
+      for (let i = index; i < state.totalResults.length && i < index + state.resultRowEachPage; i++) {
+        result += this.makeResultLine(state.totalResults[i]) + "\n"
+      }
+      if (result.length !== 0) {
+        result = result.substr(0, result.length - 1)
+      }
+      results.push(result)
+      index += state.resultRowEachPage
+    }
+    return results
+  }
+
   render() {
     return (
       <div className="div-app">
@@ -233,13 +447,16 @@ export class App extends React.Component<any, any> {
           <NumberSelectorBoard
             rulesCount={this.state.rulesCount}
             totalSelectedStatus={this.state.totalSelectedStatus}
+            totalSelectedRange={this.state.totalSelectedRange}
             maxNumber={this.state.maxNumber}
             selectCount={this.state.selectCount}
             onNumberSelected={this.hanldeNumberSelected}
             onNumberSelectedAll={this.handleNumberSelectedAll}
             onNumberSelectedClear={this.handleNumberSelectedClear}
             onNumberSelectedDelete={this.handleNumberSelectedDelete}
-            onNumberSelectedAdd={this.handleNumberSelectedAdd} />
+            onNumberSelectedAdd={this.handleNumberSelectedAdd}
+            onSelectMinChange={this.hanldeSelectMinChange}
+            onSelectMaxChange={this.hanldeSelectMaxChange} />
           <div className="div-app-sep"></div>
           <NumberCountBoard
             selectCount={this.state.selectCount}
@@ -262,6 +479,23 @@ export class App extends React.Component<any, any> {
             onCompositeClear={this.handleCompositeClear}
             onLinkingClear={this.handleLinkingClear}/>
           <div className="div-app-sep"></div>
+          <ResultsBoard
+            results={this.makeResults()}
+            pageIndex={this.state.resultPageIndex}
+            totalResultCount={this.state.totalResults.length}
+            totalPageCount={Math.ceil(this.state.totalResults.length / this.state.resultRowEachPage)}
+            pageRowCount={this.state.resultRowEachPage}
+
+            onStart={this.handleStart}
+            onPageRowCountChange={this.handlePageRowCountChange}
+            onPageIndexChange={this.hanldePageIndexChange}
+            onResultAdd={this.handleResultAdd}
+            onResultReduce={this.handleResultReduce}
+            
+            onResultFirst={this.handleResultFirst}
+            onResultPrevious={this.handleResultPrevious}
+            onResultNext={this.handleResultNext}
+            onResultLast={this.handleResultLast}/>
       </div>
     )
   }
