@@ -79,6 +79,12 @@ export class App extends React.Component<any, any> {
       let selectedRange = ["", ""]
       this.state.totalSelectedRange.push(selectedRange)
     }
+
+    ipc.on("clearAll", ()=>{
+      let state = this.state
+      this.clearAllButDoNotReflesh(state)
+      this.setState(state)
+    })
   }
 
   hanldeSelectMinChange(selectorIndex, num: number) {
@@ -186,27 +192,7 @@ export class App extends React.Component<any, any> {
     this.setState(state)
   }
 
-  handleSettingsConfirm() {
-    let state: any = this.state
-    if (state.tmpSelectCount === state.selectCount &&
-      state.tmpMaxNumber === state.maxNumber) {
-        return
-    }
-
-    if (state.tmpSelectCount >= state.tmpMaxNumber ||
-      state.tmpSelectCount === 0 ||
-      state.tmpMaxNumber <= 1) {
-        ipc.apiSend("messageDialog", "警告", "输入参数非法, 请重新输入!")
-        return
-    }
-    if (state.tmpMaxNumber > 100) {
-        ipc.apiSend("messageDialog", "警告", "最大数字总数只支持100")
-        return
-    }
-
-    state.maxNumber = state.tmpMaxNumber
-    state.selectCount = state.tmpSelectCount
-
+  clearAllButDoNotReflesh(state: any = this.state) {
     state.totalSelectedStatus = []
     for (let i = 0; i < state.rulesCount; i++) {
       let selectedStatus: boolean[] = []
@@ -225,7 +211,29 @@ export class App extends React.Component<any, any> {
     state.composite = ""
     state.linking = ""
     state.totalResults = []
+  }
 
+  handleSettingsConfirm() {
+    let state: any = this.state
+    if (state.tmpSelectCount === state.selectCount &&
+      state.tmpMaxNumber === state.maxNumber) {
+        return
+    }
+
+    if (state.tmpSelectCount >= state.tmpMaxNumber ||
+      state.tmpSelectCount === 0 ||
+      state.tmpMaxNumber <= 1) {
+        ipc.apiSend("messageDialog", "警告", "输入参数非法, 请重新输入!")
+        return
+    }
+    if (state.tmpMaxNumber > 100) {
+        ipc.apiSend("messageDialog", "警告", "最大数字总数只支持100")
+        return
+    }
+    state.maxNumber = state.tmpMaxNumber
+    state.selectCount = state.tmpSelectCount
+
+    this.clearAllButDoNotReflesh(state)
     search.reset(state.selectCount, state.maxNumber)
 
     this.setState(state)
@@ -437,12 +445,34 @@ export class App extends React.Component<any, any> {
   render() {
     return (
       <div className="div-app">
-          <SettingsBoard 
-            totalCount={this.state.tmpMaxNumber}
-            selectCount={this.state.tmpSelectCount}
-            onTotalCountChange={this.handleTotalCountChange}
-            onSelectCountChange={this.handleSelectCountChange}
-            onSettingsConfirm={this.handleSettingsConfirm}/>
+          <div className="div-app-top">
+            <SettingsBoard 
+              totalCount={this.state.tmpMaxNumber}
+              selectCount={this.state.tmpSelectCount}
+              onTotalCountChange={this.handleTotalCountChange}
+              onSelectCountChange={this.handleSelectCountChange}
+              onSettingsConfirm={this.handleSettingsConfirm}/>
+            <NumberCountBoard
+              selectCount={this.state.selectCount}
+
+              odd={this.state.odd}
+              even={this.state.even}
+              prime={this.state.prime}
+              composite={this.state.composite}
+              linking={this.state.linking}
+
+              onOddChange={this.handleOddChange}
+              onEvenChange={this.handleEvenChange}
+              onPrimeChange={this.handlePrimeChange}
+              onCompositeChange={this.handleCompositeChange}
+              onLinkingChange={this.handleLinkingChange}
+              
+              onOddClear={this.handleOddClear}
+              onEvenClear={this.handleEvenClear}
+              onPrimeClear={this.handlePrimeClear}
+              onCompositeClear={this.handleCompositeClear}
+              onLinkingClear={this.handleLinkingClear}/>
+          </div>
           <div className="div-app-sep"></div>
           <NumberSelectorBoard
             rulesCount={this.state.rulesCount}
@@ -457,27 +487,6 @@ export class App extends React.Component<any, any> {
             onNumberSelectedAdd={this.handleNumberSelectedAdd}
             onSelectMinChange={this.hanldeSelectMinChange}
             onSelectMaxChange={this.hanldeSelectMaxChange} />
-          <div className="div-app-sep"></div>
-          <NumberCountBoard
-            selectCount={this.state.selectCount}
-
-            odd={this.state.odd}
-            even={this.state.even}
-            prime={this.state.prime}
-            composite={this.state.composite}
-            linking={this.state.linking}
-
-            onOddChange={this.handleOddChange}
-            onEvenChange={this.handleEvenChange}
-            onPrimeChange={this.handlePrimeChange}
-            onCompositeChange={this.handleCompositeChange}
-            onLinkingChange={this.handleLinkingChange}
-            
-            onOddClear={this.handleOddClear}
-            onEvenClear={this.handleEvenClear}
-            onPrimeClear={this.handlePrimeClear}
-            onCompositeClear={this.handleCompositeClear}
-            onLinkingClear={this.handleLinkingClear}/>
           <div className="div-app-sep"></div>
           <ResultsBoard
             results={this.makeResults()}

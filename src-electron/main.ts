@@ -28,6 +28,9 @@ function createWindow() {
 
   // 设置缩放.
   mainWindow.webContents.on('did-finish-load', () => {
+    // 设置最大化.
+    // mainWindow.maximize()
+
     mainWindow.webContents.on('zoom-changed', (event, zoomDirection: string) => {
       if (zoomDirection === "in") {
         mainWindow.webContents.zoomFactor += 0.1
@@ -81,17 +84,7 @@ let template: any = [{
     label: '菜单',
     submenu: [
       {
-        label: '刷新',
-        accelerator: 'CmdOrCtrl+F',
-        click: (item, focusedWindow) => {
-          focusedWindow.webContents.send("refresh")
-        }
-      },
-      {
-        type: "separator"
-      },
-      {
-        label: '清空',
+        label: '清空所有设置',
         accelerator: 'CmdOrCtrl+G',
         click: (item, focusedWindow) => {
           focusedWindow.webContents.send("clearAll")
@@ -109,7 +102,7 @@ let template: any = [{
       dialog.showMessageBox(mainWindow, {
         type: "info",
         buttons: ["ok"],
-        message: "Power By Electron And React",
+        message: "Version: 2.0.0\nAuthor: Samlior\nEmail: samlior@foxmail.com\nPower By Electron, React and Typescript",
         title: "关于此软件"
       })
     }

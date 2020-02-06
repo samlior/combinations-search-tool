@@ -68,9 +68,14 @@
     border-bottom-right-radius: 20px;
 }
 
-.button-number-selector-all:hover,.button-number-selector-clear:hover,.button-number-selector-delete:hover
+.button-number-selector-all:hover,.button-number-selector-clear:hover
 {
     background-color: rgb(5, 179, 48);
+}
+
+.button-number-selector-delete:hover
+{
+    background-color: rgb(255, 106, 106);
 }
 
 .button-number-selector-all:active,.button-number-selector-clear:active,.button-number-selector-delete:active

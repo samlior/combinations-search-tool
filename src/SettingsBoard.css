@@ -19,15 +19,15 @@
 
 .button-settings-board
 {
-    outline:none;
+    outline: none;
     border: none;
     color: rgb(32,33,36);
     background-color: rgb(80,250,123);
     padding: 3px;
     font-weight: bold;
     width: 90%;
-    margin-top: 15px;
     border-radius: 20px;
+    margin-top: 85px;
 }
 
 .button-settings-board:hover

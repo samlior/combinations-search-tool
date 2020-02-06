@@ -20,7 +20,7 @@ export class ResultsBoard extends React.Component<any, any> {
                     <span className="span-results-board-page-info">共显示</span>
                     <div className="div-results-board-control" onClick={this.props.onResultAdd}><img src="add.png" className="img-results-board"/></div>
                     <span className="span-results-board-page-info">{this.props.results.length}</span>
-                    <div className="div-results-board-control" onClick={this.props.onResultReduce}><img src="reduce.png" className="img-results-board"/></div>
+                    <div className="div-results-board-control" id="div-results-board-reduce" onClick={this.props.onResultReduce}><img src="reduce.png" className="img-results-board"/></div>
                     <span className="span-results-board-page-info">页, 每页显示</span>
                     <input className="input-number-results-board" type="number" min="1" value={this.props.pageRowCount} onChange={this.props.onPageRowCountChange}/>
                     <span className="span-results-board-page-info">个结果, 当前展示第</span>

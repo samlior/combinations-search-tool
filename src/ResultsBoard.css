@@ -124,3 +124,8 @@
     position: relative;
     top: 7px;
 }
+
+#div-results-board-reduce:hover
+{
+    background-color: rgb(255, 106, 106);
+}
