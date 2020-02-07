@@ -62,7 +62,6 @@ export class NumberSelector extends React.Component<any, any> {
                 <input type="checkBox" 
                     checked={this.props.selectedStatus[i - 1]}
                     onChange={this.handleChange}
-                    className="input-checkbox-number-selector"
                     id={`input-checkbox-number-selector-${i}`}/>
             )
 

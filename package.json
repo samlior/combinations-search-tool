@@ -23,7 +23,8 @@
     "eject": "react-scripts eject",
     "watch": "node ./watch.js",
     "start-electron": "tsc --build tsconfig-electron.json && electron . --enable-logging",
-    "pack": "electron-packager ./ 组合检索工具 --out ./out --app-version 1.0.0.0 --win --x64"
+    "pack-win": "electron-packager . \"组合检索工具\" --win --out ./out-win --arch=x64 --app-version=2.0.1",
+    "pack-darwin": "electron-packager . \"组合检索工具\" --platform darwin --out ./out-darwin --arch=x64 --app-version=2.0.1"
   },
   "eslintConfig": {
     "extends": "react-app"
