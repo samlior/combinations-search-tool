@@ -11,6 +11,8 @@ export class NumberSelectorBoard extends React.Component<any, any> {
 
     render() {
         let selectors: any[] = []
+        selectors.push(this.props.makeSettingsBoard())
+        selectors.push(this.props.makeNumberCountBoard())
         for (let i = 0; i < this.props.rulesCount; i++) {
             selectors.push(
                 <NumberSelector 

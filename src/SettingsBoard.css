@@ -7,6 +7,7 @@
     width: 250px;
     margin-left: 15px;
     margin-top: 15px;
+    display: inline-block;
 }
 
 .input-number-settings-board
@@ -29,7 +30,7 @@
     font-weight: bold;
     width: 90%;
     border-radius: 8px;
-    margin-top: 85px;
+    margin-top: 80px;
 }
 
 .button-settings-board:hover

@@ -51,6 +51,9 @@ export class App extends React.Component<any, any> {
     this.handleResultNext = this.handleResultNext.bind(this)
     this.handleResultLast = this.handleResultLast.bind(this)
 
+    this.makeSettingsBoard = this.makeSettingsBoard.bind(this)
+    this.makeNumberCountBoard = this.makeNumberCountBoard.bind(this)
+
     this.state = {
       totalSelectedStatus: [],
       totalSelectedRange: [],
@@ -455,38 +458,45 @@ export class App extends React.Component<any, any> {
     return results
   }
 
+  makeSettingsBoard() {
+    return (
+      <SettingsBoard 
+        totalCount={this.state.tmpMaxNumber}
+        selectCount={this.state.tmpSelectCount}
+        onTotalCountChange={this.handleTotalCountChange}
+        onSelectCountChange={this.handleSelectCountChange}
+        onSettingsConfirm={this.handleSettingsConfirm}/>
+    )
+  }
+
+  makeNumberCountBoard() {
+    return(
+      <NumberCountBoard
+        selectCount={this.state.selectCount}
+
+        odd={this.state.odd}
+        even={this.state.even}
+        prime={this.state.prime}
+        composite={this.state.composite}
+        linking={this.state.linking}
+
+        onOddChange={this.handleOddChange}
+        onEvenChange={this.handleEvenChange}
+        onPrimeChange={this.handlePrimeChange}
+        onCompositeChange={this.handleCompositeChange}
+        onLinkingChange={this.handleLinkingChange}
+        
+        onOddClear={this.handleOddClear}
+        onEvenClear={this.handleEvenClear}
+        onPrimeClear={this.handlePrimeClear}
+        onCompositeClear={this.handleCompositeClear}
+        onLinkingClear={this.handleLinkingClear}/>
+    )
+  }
+
   render() {
     return (
       <div className="div-app">
-          <div className="div-app-top">
-            <SettingsBoard 
-              totalCount={this.state.tmpMaxNumber}
-              selectCount={this.state.tmpSelectCount}
-              onTotalCountChange={this.handleTotalCountChange}
-              onSelectCountChange={this.handleSelectCountChange}
-              onSettingsConfirm={this.handleSettingsConfirm}/>
-            <NumberCountBoard
-              selectCount={this.state.selectCount}
-
-              odd={this.state.odd}
-              even={this.state.even}
-              prime={this.state.prime}
-              composite={this.state.composite}
-              linking={this.state.linking}
-
-              onOddChange={this.handleOddChange}
-              onEvenChange={this.handleEvenChange}
-              onPrimeChange={this.handlePrimeChange}
-              onCompositeChange={this.handleCompositeChange}
-              onLinkingChange={this.handleLinkingChange}
-              
-              onOddClear={this.handleOddClear}
-              onEvenClear={this.handleEvenClear}
-              onPrimeClear={this.handlePrimeClear}
-              onCompositeClear={this.handleCompositeClear}
-              onLinkingClear={this.handleLinkingClear}/>
-          </div>
-          <div className="div-app-sep"></div>
           <NumberSelectorBoard
             rulesCount={this.state.rulesCount}
             totalSelectedStatus={this.state.totalSelectedStatus}
@@ -499,8 +509,9 @@ export class App extends React.Component<any, any> {
             onNumberSelectedDelete={this.handleNumberSelectedDelete}
             onNumberSelectedAdd={this.handleNumberSelectedAdd}
             onSelectMinChange={this.hanldeSelectMinChange}
-            onSelectMaxChange={this.hanldeSelectMaxChange} />
-          <div className="div-app-sep"></div>
+            onSelectMaxChange={this.hanldeSelectMaxChange}
+            makeSettingsBoard={this.makeSettingsBoard}
+            makeNumberCountBoard={this.makeNumberCountBoard} />
           <ResultsBoard
             results={this.makeResults()}
             pageIndex={this.state.resultPageIndex}
