@@ -24,7 +24,7 @@
     width: 35%;
     text-align: center;
     position: relative;
-    top: -1px;
+    top: -2px;
     margin-left: 5px;
     height: 20px;
 }
@@ -41,6 +41,7 @@
     background-color: rgb(80,250,123);
     padding: 3px;
     font-weight: bold;
+    height: 23px;
 }
 
 .button-number-count-board:hover

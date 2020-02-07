@@ -9,7 +9,6 @@ import { ResultsBoard } from './ResultsBoard'
 import { ipc } from './ipc'
 
 import * as search from './search'
-import { statSync } from 'fs';
 
 export class App extends React.Component<any, any> {
 
@@ -21,8 +20,7 @@ export class App extends React.Component<any, any> {
     this.handleNumberSelectedClear = this.handleNumberSelectedClear.bind(this)
     this.handleNumberSelectedDelete = this.handleNumberSelectedDelete.bind(this)
     this.handleNumberSelectedAdd = this.handleNumberSelectedAdd.bind(this)
-    this.hanldeSelectMinChange = this.hanldeSelectMinChange.bind(this)
-    this.hanldeSelectMaxChange = this.hanldeSelectMaxChange.bind(this)
+    this.handleRangeSelected = this.handleRangeSelected.bind(this)
 
     this.handleTotalCountChange = this.handleTotalCountChange.bind(this)
     this.handleSelectCountChange = this.handleSelectCountChange.bind(this)
@@ -80,7 +78,10 @@ export class App extends React.Component<any, any> {
       }
       this.state.totalSelectedStatus.push(selectedStatus)
 
-      let selectedRange = ["", ""]
+      let selectedRange: boolean[] = []
+      for (let j = 0; j <= this.state.selectCount; j++) {
+        selectedRange.push(false)
+      }
       this.state.totalSelectedRange.push(selectedRange)
     }
 
@@ -91,23 +92,13 @@ export class App extends React.Component<any, any> {
     })
   }
 
-  hanldeSelectMinChange(selectorIndex, num: number) {
+  handleRangeSelected(selectorIndex, num, checked) {
     let state = this.state
     if (selectorIndex >= state.totalSelectedRange.length) {
       return
     }
 
-    state.totalSelectedRange[selectorIndex][0] = num
-    this.setState(state)
-  }
-
-  hanldeSelectMaxChange(selectorIndex, num: number) {
-    let state = this.state
-    if (selectorIndex >= state.totalSelectedRange.length) {
-      return
-    }
-
-    state.totalSelectedRange[selectorIndex][1] = num
+    state.totalSelectedRange[selectorIndex][num] = checked
     this.setState(state)
   }
 
@@ -142,9 +133,6 @@ export class App extends React.Component<any, any> {
     for (let i = 0; i < state.totalSelectedStatus[selectorIndex].length; i++) {
       state.totalSelectedStatus[selectorIndex][i] = false
     }
-
-    state.totalSelectedRange[selectorIndex][0] = ""
-    state.totalSelectedRange[selectorIndex][1] = ""
     this.setState(state)
   }
 
@@ -155,7 +143,7 @@ export class App extends React.Component<any, any> {
     }
 
     let newArr: boolean[][] = []
-    let newArr2: number[][] = []
+    let newArr2: boolean[][] = []
     for (let i = 0; i < state.totalSelectedStatus.length; i++) {
       if (i === selectorIndex)
         continue
@@ -178,8 +166,12 @@ export class App extends React.Component<any, any> {
     for (let i = 0; i < this.state.maxNumber; i++) {
       newArr.push(false)
     }
+    let newArr2: boolean[] = []
+    for (let i = 0; i <= this.state.selectCount; i++) {
+      newArr2.push(false)
+    }
     state.totalSelectedStatus.push(newArr)
-    state.totalSelectedRange.push(["", ""])
+    state.totalSelectedRange.push(newArr2)
     state.rulesCount += 1
     this.setState(state)
   }
@@ -198,6 +190,7 @@ export class App extends React.Component<any, any> {
 
   clearAllButDoNotReflesh(state: any = this.state) {
     state.totalSelectedStatus = []
+    state.totalSelectedRange = []
     for (let i = 0; i < state.rulesCount; i++) {
       let selectedStatus: boolean[] = []
       for (let j = 0; j < state.maxNumber; j++) {
@@ -205,8 +198,11 @@ export class App extends React.Component<any, any> {
       }
       state.totalSelectedStatus.push(selectedStatus)
 
-      state.totalSelectedRange[i][0] = ""
-      state.totalSelectedRange[i][1] = ""
+      let selectedRange: boolean[] = []
+      for (let j = 0; j <= state.selectCount; j++) {
+        selectedRange.push(false)
+      }
+      state.totalSelectedRange.push(selectedRange)
     }
 
     state.odd = ""
@@ -380,14 +376,15 @@ export class App extends React.Component<any, any> {
         continue
       }
 
-      if (this.state.totalSelectedRange[i][0] === "" || this.state.totalSelectedRange[i][1] === "" ||
-        this.state.totalSelectedRange[i][0] > this.state.totalSelectedRange[i][1]) {
-        ipc.apiSend("messageDialog", "警告", `条件${i + 1}的范围非法, 请重新输入!`)
-        return
+      for (let j = 0; j < this.state.totalSelectedRange[i].length; j++) {
+        if (this.state.totalSelectedRange[i][j]) {
+          rule.show_count.push(j)
+        }
+      }
+      if (rule.show_count.length === 0) {
+        continue
       }
 
-      rule.show_count_min = Number(this.state.totalSelectedRange[i][0])
-      rule.show_count_max = Number(this.state.totalSelectedRange[i][1])
       rules.push(rule)
     }
 
@@ -508,8 +505,7 @@ export class App extends React.Component<any, any> {
             onNumberSelectedClear={this.handleNumberSelectedClear}
             onNumberSelectedDelete={this.handleNumberSelectedDelete}
             onNumberSelectedAdd={this.handleNumberSelectedAdd}
-            onSelectMinChange={this.hanldeSelectMinChange}
-            onSelectMaxChange={this.hanldeSelectMaxChange}
+            onRangeSelected={this.handleRangeSelected}
             makeSettingsBoard={this.makeSettingsBoard}
             makeNumberCountBoard={this.makeNumberCountBoard} />
           <ResultsBoard

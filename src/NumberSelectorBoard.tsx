@@ -21,15 +21,13 @@ export class NumberSelectorBoard extends React.Component<any, any> {
                     selectedStatus={this.props.totalSelectedStatus[i]}
                     maxNumber={this.props.maxNumber}
                     selectCount={this.props.selectCount}
-                    selectMin={this.props.totalSelectedRange[i][0]}
-                    selectMax={this.props.totalSelectedRange[i][1]}
+                    selectedRangeStatus={this.props.totalSelectedRange[i]}
                     onNumberSelected={this.props.onNumberSelected}
                     onNumberSelectedAll={this.props.onNumberSelectedAll}
                     onNumberSelectedClear={this.props.onNumberSelectedClear}
                     onNumberSelectedDelete={this.props.onNumberSelectedDelete}
                     onNumberSelectedAdd={this.props.onNumberSelectedAdd}
-                    onSelectMinChange={this.props.onSelectMinChange}
-                    onSelectMaxChange={this.props.onSelectMaxChange} />
+                    onRangeSelected={this.props.onRangeSelected} />
             )
         }
 
@@ -38,6 +36,10 @@ export class NumberSelectorBoard extends React.Component<any, any> {
         for (let i = 0; i < this.props.maxNumber; i++) {
             uselessSelectedStatus.push(false)
         }
+        let uselessSelectedRange: boolean[] = []
+        for (let i = 0; i <= this.props.selectCount; i++) {
+            uselessSelectedRange.push(false)
+        }
         selectors.push(
             <NumberSelector 
                 index={selectors.length}
@@ -45,11 +47,13 @@ export class NumberSelectorBoard extends React.Component<any, any> {
                 selectedStatus={uselessSelectedStatus}
                 maxNumber={this.props.maxNumber}
                 selectCount={this.props.selectCount}
+                selectedRangeStatus={uselessSelectedRange}
                 onNumberSelected={this.props.onNumberSelected}
                 onNumberSelectedAll={this.props.onNumberSelectedAll}
                 onNumberSelectedClear={this.props.onNumberSelectedClear}
                 onNumberSelectedDelete={this.props.onNumberSelectedDelete}
-                onNumberSelectedAdd={this.props.onNumberSelectedAdd} />
+                onNumberSelectedAdd={this.props.onNumberSelectedAdd}
+                onRangeSelected={this.props.onRangeSelected} />
         )
 
         return (

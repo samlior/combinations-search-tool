@@ -93,15 +93,20 @@
     border: none;
 }
 
-.div-input-number-selector
+.div-number-selector-range
 {
     margin-top: 15px;
-    width: 100%;
 }
 
 .div-number-selector-helper-invisible,.img-number-selector-helper-invisible
 {
     visibility: hidden;
+}
+.span-number-selector-tips
+{
+    margin-bottom: -15px;
+    font-weight: bold;
+    display: block;
 }
 
 input[type="checkbox"]
@@ -121,6 +126,8 @@ input[type="checkbox"]
     height: 20px;
 
     outline: none;
+
+    top: -3px;
 }
 
 input[type="checkbox"]:checked

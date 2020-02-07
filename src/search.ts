@@ -48,8 +48,7 @@ export function reset(s: number, t: number) {
 
 export class search_rule {
     nums: number[] = []
-    show_count_min: number = 0
-    show_count_max: number = 0
+    show_count: number[] = []
 }
 
 const total_prime: number[] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
@@ -115,7 +114,7 @@ export function search(odd: number, even: number, prime: number, composite: numb
         }
         let rule_flag = true
         for (let l = 0; l < rules.length; l++) {
-            if (rule_count[l] < rules[l].show_count_min || rule_count[l] > rules[l].show_count_max) {
+            if (not_in(rules[l].show_count, rule_count[l])) {
                 rule_flag = false
                 break
             }
