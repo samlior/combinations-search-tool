@@ -84,7 +84,7 @@ let template: any = [{
     label: '菜单',
     submenu: [
       {
-        label: '清空所有设置',
+        label: '清空',
         accelerator: 'CmdOrCtrl+G',
         click: (item, focusedWindow) => {
           focusedWindow.webContents.send("clearAll")

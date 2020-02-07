@@ -54,22 +54,25 @@ export class NumberSelector extends React.Component<any, any> {
     }
 
     render() {
+        let numberEachLine: number = 11        
+
         let checkBoxs: any[] = []
         for (let i = 1; i <= this.props.maxNumber; i++) {
             checkBoxs.push(
                 <input type="checkBox" 
                     checked={this.props.selectedStatus[i - 1]}
                     onChange={this.handleChange}
+                    className="input-checkbox-number-selector"
                     id={`input-checkbox-number-selector-${i}`}/>
             )
 
             checkBoxs.push(<span>{i}</span>)
 
-            if (i % 5 === 0) {
+            if (i % numberEachLine === 0) {
                 checkBoxs.push(<br/>)
             }
         }
-        if (this.props.maxNumber % 5 !== 0) {
+        if (this.props.maxNumber % numberEachLine !== 0) {
             checkBoxs.push(<br/>)
         }
 

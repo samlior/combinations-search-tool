@@ -12,9 +12,11 @@
 .input-number-settings-board
 {
     outline: none;
-    border-radius: 20px;
+    border-radius: 5px;
     width: 50%;
     text-align: center;
+    border: none;
+    height: 20px;
 }
 
 .button-settings-board
@@ -26,7 +28,7 @@
     padding: 3px;
     font-weight: bold;
     width: 90%;
-    border-radius: 20px;
+    border-radius: 8px;
     margin-top: 85px;
 }
 

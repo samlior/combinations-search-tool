@@ -17,21 +17,23 @@
 .input-number-number-count-board
 {
     outline: none;
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
+    border: none;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
     width: 35%;
     text-align: center;
     position: relative;
-    top: -2px;
+    top: -1px;
     margin-left: 5px;
+    height: 20px;
 }
 
 .button-number-count-board
 {
     width: 20%;
     margin-left: 3px;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
     outline:none;
     border: none;
     color: rgb(32,33,36);

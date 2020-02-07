@@ -4,7 +4,7 @@
     padding: 15px;
     border-radius: 20px;
     border: none;
-    width: 250px;
+    width: 530px;
     display: inline-block;
     margin-left: 15px;
     margin-top: 15px;
@@ -52,8 +52,8 @@
 
 .button-number-selector-all
 {
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
 }
 
 .button-number-selector-clear
@@ -64,8 +64,8 @@
 .button-number-selector-delete
 {
     margin-left: 3px;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 .button-number-selector-all:hover,.button-number-selector-clear:hover
@@ -87,9 +87,10 @@
 .input-text-number-selector
 {
     outline: none;
-    border-radius: 20px;
-    width: 20%;
+    border-radius: 5px;
+    width: 8%;
     text-align: center;
+    border: none;
 }
 
 .div-input-number-selector
@@ -101,4 +102,49 @@
 .div-number-selector-helper-invisible,.img-number-selector-helper-invisible
 {
     visibility: hidden;
+}
+
+input[type="checkbox"]
+{
+    -webkit-appearance: none;
+    vertical-align: middle;
+    margin-left: 7px;
+    margin-top: 5px;
+    background:#fff;
+    border: none;
+    border-radius: 5px;
+    min-height: 12px;
+    min-width: 12px;
+    position: relative;
+
+    width: 20px;
+    height: 20px;
+
+    outline: none;
+}
+
+input[type="checkbox"]:checked
+{
+    background: rgb(80,250,123);
+}
+
+input[type="checkbox"]:checked::after
+{
+    content: '';
+    top: 3px;
+    left: 3px;
+    position: absolute;
+    background: transparent;
+    border: #fff solid 2px;
+    border-top: none;
+    border-right: none;
+    height: 6px;
+    width: 10px;
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg); 
+    transform: rotate(-45deg);
+
+    border-bottom: 3px solid rgb(26,27,29);/*设置√的颜色*/
+    border-left: 3px solid rgb(26,27,29);/*设置√的颜色*/
 }

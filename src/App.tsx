@@ -9,6 +9,7 @@ import { ResultsBoard } from './ResultsBoard'
 import { ipc } from './ipc'
 
 import * as search from './search'
+import { statSync } from 'fs';
 
 export class App extends React.Component<any, any> {
 
@@ -63,8 +64,8 @@ export class App extends React.Component<any, any> {
       prime: "",
       composite: "",
       linking: "",
-      resultPageCount: 2,
-      resultRowEachPage: 40,
+      resultPageCount: 1,
+      resultRowEachPage: -1,
       resultPageIndex: 1,
       totalResults: []
     }
@@ -427,17 +428,29 @@ export class App extends React.Component<any, any> {
     let pageIndex = this.state.resultPageIndex - 1
     let state: any = this.state
     let results: string[] = []
-    let index: number = pageIndex * state.resultRowEachPage
-    while (results.length < state.resultPageCount) {
+    if (state.resultRowEachPage !== -1) {
+      let index: number = pageIndex * state.resultRowEachPage
+      while (results.length < state.resultPageCount) {
+        let result: string = ""
+        for (let i = index; i < state.totalResults.length && i < index + state.resultRowEachPage; i++) {
+          result += this.makeResultLine(state.totalResults[i]) + "\n"
+        }
+        if (result.length !== 0) {
+          result = result.substr(0, result.length - 1)
+        }
+        results.push(result)
+        index += state.resultRowEachPage
+      }
+    }
+    else {
       let result: string = ""
-      for (let i = index; i < state.totalResults.length && i < index + state.resultRowEachPage; i++) {
+      for (let i = 0; i < state.totalResults.length; i++) {
         result += this.makeResultLine(state.totalResults[i]) + "\n"
       }
       if (result.length !== 0) {
         result = result.substr(0, result.length - 1)
       }
       results.push(result)
-      index += state.resultRowEachPage
     }
     return results
   }
