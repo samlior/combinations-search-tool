@@ -71,7 +71,7 @@ let api = {
             });
 
             modalWin.on('close', () => { modalWin = null })
-            modalWin.loadURL(path.join('file://', __dirname, '../src-electron/modal.html'))
+            modalWin.loadURL(path.join('file://', __dirname, './modal.html'))
             modalWin.show()
         }
         reply({success: true})

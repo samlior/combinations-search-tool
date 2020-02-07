@@ -102,7 +102,7 @@ let template: any = [{
       dialog.showMessageBox(mainWindow, {
         type: "info",
         buttons: ["ok"],
-        message: "Version: 2.0.0\nAuthor: Samlior\nEmail: samlior@foxmail.com\nPower By Electron, React and Typescript",
+        message: "版本: 2.0.1\n作者: Alexier, Samlior\n联系方式: samlior@foxmail.com\n\nPower By Electron, React and Typescript.",
         title: "关于此软件"
       })
     }
