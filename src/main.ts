@@ -17,7 +17,7 @@ function createWindow() {
   });
   
   // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, "../build-react/index.html"));
+  mainWindow.loadFile(path.join(__dirname, "../page-main/build/index.html"));
 
   // Emitted when the window is closed.
   mainWindow.on("closed", () => {

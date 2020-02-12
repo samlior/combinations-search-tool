@@ -5,17 +5,13 @@ async function bundleElectronApp(options) {
   const appPaths = await packager(options)
 }
 
-let ignoreFileName = [
-    "/src",
-    "/src-electron",
-    "/package-lock.json",
-    "/tsconfig.json",
-    "/tsconfig-electron.json",
-    "/watch.js",
-    "/pack.js",
-    "/out-win",
-    "/out-darwin",
-    "/public"
+let packFileName = [
+    "/build",
+    "/html",
+    "/page-main/build",
+    "/node_modules",
+    "/package.json",
+    "/settings.js"
 ]
 
 let appName = "组合检索工具"
@@ -51,12 +47,17 @@ async function main() {
         arch: arch,
         asar: true,
         ignore: (fileName)=>{
-            for (let n of ignoreFileName) {
-                if (fileName.indexOf(n) !== -1) {
-                    return true
+            if (fileName === "") {
+                return false
+            }
+            for (let n of packFileName) {
+                if (fileName.indexOf(n) === 0 || n.indexOf(fileName) === 0) {
+                    console.log("pack:" + fileName)
+                    return false
                 }
             }
-            return false
+            console.log("ignore:" + fileName)
+            return true
         },
         name: appName,
         out: out,

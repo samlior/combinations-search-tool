@@ -1,6 +1,5 @@
 import { dialog, BrowserWindow, clipboard } from "electron";
 import * as path from 'path'
-import * as fs from 'fs';
 
 /*
 function fillString(str: string, n: number): string {
@@ -73,7 +72,7 @@ let api = {
             });
 
             modalWin.on('close', () => { modalWin = null })
-            modalWin.loadURL(path.join('file://', __dirname, './modal.html'))
+            modalWin.loadURL(path.join('file://', __dirname, '../html/modal.html'))
             modalWin.show()
         }
         reply({success: true})

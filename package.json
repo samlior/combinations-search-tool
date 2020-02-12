@@ -3,42 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.4.0",
-    "@testing-library/user-event": "^7.2.1",
-    "@types/jest": "^24.9.0",
-    "@types/node": "^12.12.25",
-    "@types/react": "^16.9.17",
-    "@types/react-dom": "^16.9.4",
     "electron": "^7.1.9",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-scripts": "3.3.0",
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "watch": "node ./watch.js",
-    "start-electron": "tsc --build tsconfig-electron.json && electron . --enable-logging",
+    "start": "tsc && electron . --enable-logging",
     "pack-win": "node ./pack.js win32",
     "pack-darwin": "node ./pack.js darwin"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "main": "./build-electron/main.js",
-  "homepage": "./",
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "main": "./build/main.js",
   "devDependencies": {
     "electron-packager": "^14.2.1"
   }

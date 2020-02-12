@@ -44,12 +44,6 @@ const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
 const ignoredFiles = require('react-dev-utils/ignoredFiles');
 
-//-----------------add by samlior----------------------
-const appDirectory = fs.realpathSync(process.cwd());
-const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
-paths.appBuild = resolveApp('build-react')
-//-----------------add by samlior----------------------
-
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
