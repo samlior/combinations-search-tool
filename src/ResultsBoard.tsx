@@ -1,6 +1,8 @@
 import React from 'react';
 import "./ResultsBoard.css"
 
+let pp = 0 
+
 export class ResultsBoard extends React.Component<any, any> {
     /*
     render() {
@@ -41,26 +43,18 @@ export class ResultsBoard extends React.Component<any, any> {
     */
 
    render() {
-
-    let textareas: any[] = []
-    for (let i = 0; i < this.props.results.length; i++) {
-        textareas.push(
-            <div className="div-results-board-result">
-                {this.props.results[i]}
+        return (
+            <div className="div-results-board">
+                <div className="div-results-board-top">
+                    <button className="button-results-board-start" onClick={this.props.onStart}>开始检索</button>
+                    <button className="button-results-board-copy" onClick={this.props.onCopy}>复制结果</button>
+                    <span className="span-results-board-page-info">共计{this.props.totalResultCount}个结果</span>
+                </div>
+                <div className="div-results-board-bottom">
+                    <textarea value={this.props.results[0]} className="textarea-results-board-result" readOnly>
+                    </textarea>
+                </div>
             </div>
         )
     }
-
-    return (
-        <div className="div-results-board">
-            <div className="div-results-board-top">
-                <button className="button-results-board-start" onClick={this.props.onStart}>开始检索</button>
-                <span className="span-results-board-page-info">共计{this.props.totalResultCount}个结果</span>
-            </div>
-            <div className="div-results-board-bottom">
-                {textareas}
-            </div>
-        </div>
-    )
-}
 }

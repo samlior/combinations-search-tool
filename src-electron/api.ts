@@ -1,7 +1,8 @@
-import { dialog, BrowserWindow } from "electron";
+import { dialog, BrowserWindow, clipboard } from "electron";
 import * as path from 'path'
 import * as fs from 'fs';
 
+/*
 function fillString(str: string, n: number): string {
     let tmp: string = ""
     while (str.length + tmp.length < n) {
@@ -25,6 +26,7 @@ function getCurrentTime(): string {
         fillString(hh, 2) + sep2 + fillString(mm, 2) + sep2 + fillString(ss, 2);
     return currentdate;
 }
+*/
 
 let modalWin: BrowserWindow = null
 
@@ -82,6 +84,13 @@ let api = {
             modalWin = null
         }
         reply({success: true})
+    },
+    copyData: (reply, data) => {
+        clipboard.writeText(data)
+        dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+            title: "提示",
+            message : "结果已成功复制到剪贴板!"
+        })
     }
 }
 

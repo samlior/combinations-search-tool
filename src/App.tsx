@@ -39,6 +39,7 @@ export class App extends React.Component<any, any> {
     this.handleLinkingClear = this.handleLinkingClear.bind(this)
 
     this.handleStart = this.handleStart.bind(this)
+    this.handleCopy = this.handleCopy.bind(this)
     this.handleResultAdd = this.handleResultAdd.bind(this)
     this.handleResultReduce = this.handleResultReduce.bind(this)
     this.handlePageRowCountChange = this.handlePageRowCountChange.bind(this)
@@ -412,6 +413,13 @@ export class App extends React.Component<any, any> {
     this.setState(state)
   }
 
+  handleCopy() {
+    let results = this.makeResults()
+    if (results.length > 0) {
+      ipc.apiSend("copyData", results[0])
+    }
+  }
+
   makeResultLine(result: number[]): string {
     if (result.length === 0) {
       return ""
@@ -516,6 +524,7 @@ export class App extends React.Component<any, any> {
             pageRowCount={this.state.resultRowEachPage}
 
             onStart={this.handleStart}
+            onCopy={this.handleCopy}
             onPageRowCountChange={this.handlePageRowCountChange}
             onPageIndexChange={this.hanldePageIndexChange}
             onResultAdd={this.handleResultAdd}
