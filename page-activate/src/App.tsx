@@ -10,6 +10,7 @@ export class App extends React.Component<any, any> {
     this.hanldeChange = this.hanldeChange.bind(this)
     this.handleCopy = this.handleCopy.bind(this)
     this.handleActivate = this.handleActivate.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
 
     this.state = {
       info: "",
@@ -21,13 +22,13 @@ export class App extends React.Component<any, any> {
       let result = response.status      
       let state: any = this.state
       if (result.status === "update") {
-        state.title = "检测到硬件改动, 请联系客服重新获取激活码!"
+        state.title = "检测到硬件改动, 请联系客服重新获取激活码! (°ー°〃)"
       }
       else if (result.status === "activate") {
-        state.title = "您的产品未激活, 请按提示激活程序!"
+        state.title = "您的产品未激活, 请按提示激活程序! o(^▽^)o"
       }
       else if (result.status === "expire") {
-        state.title = "您的激活码已到期, 请重新激活程序!"
+        state.title = "您的激活码已到期, 请重新激活程序! (°ー°〃)"
       }
       state.info = result.info
       this.setState(state)
@@ -48,20 +49,26 @@ export class App extends React.Component<any, any> {
     ipc.api("checkSignature", this.state.sig).then((response: any) => {
       let result = response.status
       if (result.status !== "success") {
-        return ipc.apiSend("messageDialog", "警告", "激活码错误!")
+        return ipc.apiSend("messageDialog", "警告", "激活码错误! X﹏X")
       }
       if (result.validTime === -1) {
-        ipc.api("buttonsDialog", "提示", "恭喜您激活成功!").then(() => {
+        ipc.api("buttonsDialog", "提示", "恭喜您激活成功! (๑•̀ㅂ•́)و✧").then(() => {
           ipc.apiSend("activateWindowClose")
         })
       }
       else {
-        ipc.api("buttonsDialog", "提示", `恭喜您激活成功, 有效期至${result.validTime}`).then(() => {
+        ipc.api("buttonsDialog", "提示", `恭喜您激活成功! (๑•̀ㅂ•́)و✧, 有效期至${result.validTime}`).then(() => {
           ipc.apiSend("activateWindowClose")
         })
       }
     }, (response) => {
-      ipc.apiSend("messageDialog", "警告", "激活码错误!")
+      ipc.apiSend("messageDialog", "警告", "激活码错误! X﹏X")
+    })
+  }
+
+  handleCancel() {
+    ipc.api("buttonsDialog", "提示", "软件开发不易, 还望支持! (๑•̀ㅂ•́)و✧").then(() => {
+      ipc.apiSend("quit")
     })
   }
 
@@ -81,7 +88,7 @@ export class App extends React.Component<any, any> {
           <textarea className="textarea-app" value={this.state.info} readOnly></textarea>
         </div>
         <div className="div-app-flex-right">
-          <button className="button-app" onClick={this.handleCopy}>复制特征码到剪贴板</button>
+          <button className="button-app" onClick={this.handleCopy}>复制特征码</button>
         </div>
         <span className="span-app-tips">请输入客服回复的激活码:</span>
         <div className="div-app-flex">
@@ -89,6 +96,7 @@ export class App extends React.Component<any, any> {
         </div>
         <div className="div-app-flex-right">
           <button className="button-app" onClick={this.handleActivate}>激活</button>
+          <button className="button-app" onClick={this.handleCancel}>取消</button>
         </div>
       </div>
     )

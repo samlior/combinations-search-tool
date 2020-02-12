@@ -1,4 +1,4 @@
-import { dialog, BrowserWindow, clipboard } from "electron";
+import { app, dialog, BrowserWindow, clipboard } from "electron";
 import * as path from 'path'
 import { checkAndPersistTotalSignature } from './activate'
 
@@ -12,7 +12,8 @@ let api = {
             return
         dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
             title: title,
-            message : message
+            message : message,
+            type: "info"
         })
     },
     buttonsDialog: (reply, title: string, message: string, ...args: string[]) => {
@@ -29,6 +30,7 @@ let api = {
         dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
             title: title,
             message: message,
+            type: "info",
             buttons: args
         }).then((result) => {
             response.index = result.response
@@ -68,7 +70,8 @@ let api = {
         clipboard.writeText(data)
         dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
             title: "提示",
-            message : "内容已成功复制到剪贴板!"
+            message : "内容已成功复制到剪贴板! o(^_^)o",
+            type: "info"
         })
     },
     // main process call
@@ -114,6 +117,9 @@ let api = {
             status: checkAndPersistTotalSignature(activateStatus.info,
                 totalSignature, activateStatus.infoVersion)
         })
+    },
+    quit: () => {
+        app.quit()
     }
 }
 

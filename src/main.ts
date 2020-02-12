@@ -9,7 +9,7 @@ let mainWindow: Electron.BrowserWindow = null
 function terminate(err: any) {
   dialog.showMessageBox(mainWindow, {
       title: "警告",
-      message: `发生不可恢复错误, 请联系客服处理!\n\n${err}`
+      message: `发生不可恢复错误, 请联系客服处理! (°ー°〃)\n\n${err}`
   }).then(() => {
       mainWindow.close()
   })
@@ -121,6 +121,32 @@ let template: any = [{
   {
     label: '视图',
     role: 'viewMenu'
+  },
+  {
+    label: "激活状态",
+    click: () => {
+      checkLocalStatus().then((result) => {
+        if (result.status === "error") {
+          return terminate("checkLocalStatus status error")
+        }
+        else if (result.status === 'update' || result.status === 'activate' || result.status === 'expire') {
+          api.setActivateStatus(result)
+          api.activateWindowShow(()=>{})
+        }
+        else if (result.status === 'success') {
+          dialog.showMessageBox(mainWindow, {
+            type: "info",
+            buttons: ["ok"],
+            message: `激活状态: 成功\n有效期至: ${result.validTime}`,
+            title: "激活状态"
+          })
+        }
+      }, (err) => {
+        terminate(err)
+      }).catch((err) => {
+        terminate(err)
+      })
+    }
   },
   {
     label: "关于",

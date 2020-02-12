@@ -283,7 +283,8 @@ async function checkLocalStatus(): Promise<any> {
         }
 
         return {
-            status: "success"
+            status: "success",
+            validTime: data.sig.validTime === -1 ? "无限期" : currentTimeInfo(data.sig.validTime)
         }
     }
     catch(e) {

@@ -224,11 +224,11 @@ export class App extends React.Component<any, any> {
     if (state.tmpSelectCount >= state.tmpMaxNumber ||
       state.tmpSelectCount === 0 ||
       state.tmpMaxNumber <= 1) {
-        ipc.apiSend("messageDialog", "警告", "输入参数非法, 请重新输入!")
+        ipc.apiSend("messageDialog", "警告", "输入参数非法, 请重新输入! X﹏X")
         return
     }
-    if (state.tmpMaxNumber > 100) {
-        ipc.apiSend("messageDialog", "警告", "最大数字总数只支持100")
+    if (state.tmpMaxNumber > 99) {
+        ipc.apiSend("messageDialog", "警告", "最大数字总数只支持99! X﹏X")
         return
     }
     state.maxNumber = state.tmpMaxNumber
@@ -405,7 +405,7 @@ export class App extends React.Component<any, any> {
     if (state.totalResults === null) {
       state.totalResults = []
       ipc.api("modalClose")
-      ipc.apiSend("messageDialog", "警告", `输入条件缺失, 请重新输入!`)
+      ipc.apiSend("messageDialog", "警告", `输入条件缺失, 请重新输入! X﹏X`)
       return
     }
     ipc.apiSend("modalClose")

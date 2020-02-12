@@ -9,6 +9,7 @@ let packFileName = [
     "/build",
     "/html",
     "/page-main/build",
+    "/page-activate/build",
     "/node_modules",
     "/package.json",
     "/settings.js"
