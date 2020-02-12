@@ -8,6 +8,7 @@
     margin-left: 15px;
     margin-top: 15px;
     display: inline-block;
+    align-self: flex-start;
 }
 
 .div-number-count-board-line

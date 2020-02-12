@@ -57,9 +57,11 @@ export class NumberSelectorBoard extends React.Component<any, any> {
         )
 
         return (
-            <div className="div-number-selector-board">
+            <div>
                 <span className="span-number-selector-board">当前条件总数: {this.props.rulesCount}</span>
-                {selectors}
+                <div className="div-number-selector-board">
+                    {selectors}
+                </div>
             </div>
         )
     }

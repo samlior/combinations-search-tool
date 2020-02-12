@@ -8,3 +8,8 @@
     /*color: rgb(80,250,123);*/
 }
 
+.div-number-selector-board
+{
+    display: flex;
+    flex-wrap: wrap;
+}
