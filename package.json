@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "base-x": "^3.0.7",
     "electron": "^7.1.9",
+    "secp256k1": "^4.0.0",
     "typescript": "^3.7.5"
   },
   "scripts": {

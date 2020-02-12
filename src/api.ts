@@ -1,33 +1,10 @@
 import { dialog, BrowserWindow, clipboard } from "electron";
 import * as path from 'path'
-
-/*
-function fillString(str: string, n: number): string {
-    let tmp: string = ""
-    while (str.length + tmp.length < n) {
-        tmp += "0"
-    }
-    return tmp + str
-}
-
-function getCurrentTime(): string {
-    let date = new Date();
-    let sep1 = "-";
-    let sep2 = ":";
-    let year: string = date.getFullYear().toString();
-    let month: string = (date.getMonth() + 1).toString();
-    let day: string = date.getDate().toString();
-    let hh: string = date.getHours().toString();
-    let mm: string = date.getMinutes().toString();
-    let ss: string = date.getSeconds().toString();
-
-    let currentdate = fillString(year, 4) + sep1 + fillString(month, 2) + sep1 + fillString(day, 2) + " " +
-        fillString(hh, 2) + sep2 + fillString(mm, 2) + sep2 + fillString(ss, 2);
-    return currentdate;
-}
-*/
+import { checkAndPersistTotalSignature } from './activate'
 
 let modalWin: BrowserWindow = null
+let activateWindow: Electron.BrowserWindow = null
+let activateStatus: any = null
 
 let api = {
     messageDialog: (reply, title: string, message: string) => {
@@ -42,9 +19,12 @@ let api = {
         let response: any = {
             success: false
         }
-        if (!title || !message || !args || args.length == 0) {
+        if (!title || !message) {
             response.msg = "invalid args"
             return
+        }
+        if (!args) {
+            args = []
         }
         dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
             title: title,
@@ -88,7 +68,51 @@ let api = {
         clipboard.writeText(data)
         dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
             title: "提示",
-            message : "结果已成功复制到剪贴板!"
+            message : "内容已成功复制到剪贴板!"
+        })
+    },
+    // main process call
+    setActivateStatus: (newStatus) => {
+        activateStatus = newStatus
+    },
+    // render process call
+    getActivateStatus: (reply) => {
+        reply({
+            success: true,
+            status: activateStatus
+        })
+    },
+    activateWindowShow: (reply) => {
+        if (activateWindow === null) {
+            activateWindow = new BrowserWindow({
+                height: 800,
+                webPreferences: {
+                    nodeIntegration: true
+                },
+                width: 800,
+                parent: BrowserWindow.getFocusedWindow(),
+                modal: true,
+                frame: false
+            });
+    
+            activateWindow.on('close', () => { activateWindow = null })
+            activateWindow.loadURL(path.join('file://', __dirname, '../page-activate/build/index.html'))
+            activateWindow.show()
+        }
+        reply({success: true})
+    },
+    activateWindowClose: (reply) => {
+        if (activateWindow !== null) {
+            activateWindow.close()
+            activateWindow = null
+        }
+        reply({success: true})
+    },
+    checkSignature: (reply, totalSignature) => {       
+        reply({
+            success: true,
+            status: checkAndPersistTotalSignature(activateStatus.info,
+                totalSignature, activateStatus.infoVersion)
         })
     }
 }

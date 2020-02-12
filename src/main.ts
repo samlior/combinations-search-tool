@@ -1,9 +1,19 @@
-import { app, Menu, BrowserWindow, ipcMain, dialog, MouseWheelInputEvent  } from "electron";
+import { app, Menu, BrowserWindow, ipcMain, dialog  } from "electron";
 import * as path from "path";
 import * as settings from '../settings'
 import { api } from './api'
+import { checkLocalStatus } from './activate'
 
-let mainWindow: Electron.BrowserWindow;
+let mainWindow: Electron.BrowserWindow = null
+
+function terminate(err: any) {
+  dialog.showMessageBox(mainWindow, {
+      title: "警告",
+      message: `发生不可恢复错误, 请联系客服处理!\n\n${err}`
+  }).then(() => {
+      mainWindow.close()
+  })
+}
 
 function createWindow() {
   // Create the browser window.
@@ -30,7 +40,7 @@ function createWindow() {
   // 设置缩放.
   mainWindow.webContents.on('did-finish-load', () => {
     // 设置最大化.
-    // mainWindow.maximize()
+    mainWindow.maximize()
 
     mainWindow.webContents.on('zoom-changed', (event, zoomDirection: string) => {
       if (zoomDirection === "in") {
@@ -40,6 +50,21 @@ function createWindow() {
         mainWindow.webContents.zoomFactor -= 0.1
       }
     })
+
+    checkLocalStatus().then((result) => {
+      if (result.status === "error") {
+        return terminate("checkLocalStatus status error")
+      }
+      else if (result.status === 'update' || result.status === 'activate' || result.status === 'expire') {
+        api.setActivateStatus(result)
+        api.activateWindowShow(()=>{})
+      }
+    }, (err) => {
+      terminate(err)
+    }).catch((err) => {
+      terminate(err)
+    })
+
   })
 }
 

@@ -1,0 +1,82 @@
+.div-app
+{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.div-app-flex
+{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.div-app-flex-right
+{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+}
+
+.div-app-tips
+{
+    margin-left: 15px;
+}
+
+.textarea-app
+{
+    outline: none;
+    resize: none;
+    margin-top: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+    height: 150px;
+    overflow: auto;
+    white-space: pre-line;
+    flex-grow: 1;
+    padding: 15px;
+    border-radius: 20px;
+    color: white;
+    background-color: rgb(26,27,29);
+    border: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+}
+
+.span-app-tips
+{
+    display: block;
+    margin-top: 15px;
+    margin-left: 15px;
+    font-weight: bold;
+}
+
+.button-app
+{
+    outline: none;
+    border: none;
+    color: rgb(32,33,36);
+    background-color: rgb(80,250,123);
+    padding: 3px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-right: 15px;
+    border-radius: 10px;
+    align-self: flex-end;
+    width: 150px;
+    height: 30px;
+}
+
+.button-app:hover
+{
+    background-color: rgb(5, 179, 48);
+}
+
+.button-app:active
+{
+    background-color: rgb(26,27,29);
+    color: white;
+}
