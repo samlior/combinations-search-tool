@@ -1,6 +1,6 @@
 import { app, dialog, BrowserWindow, clipboard } from "electron";
 import * as path from 'path'
-import { checkAndPersistTotalSignature } from './activate'
+import { checkLocalStatus, checkAndPersistTotalSignature } from './activate'
 
 let modalWin: BrowserWindow = null
 let activateWindow: Electron.BrowserWindow = null
@@ -120,6 +120,33 @@ let api = {
     },
     quit: () => {
         app.quit()
+    },
+    checkLocalStatus: (reply) => {
+        let response = {
+            success: false
+        }
+
+        checkLocalStatus().then((result) => {
+                if (result.status === "error") {
+                    return reply(response)
+                }
+                else if (result.status === 'update' || result.status === 'activate' || result.status === 'expire') {
+                    api.setActivateStatus(result)
+                    api.activateWindowShow(()=>{})
+                    return reply(response)
+                }
+                else if (result.status === "success") {
+                    response.success = true
+                    return reply(response)
+                }
+            }, 
+            (err) => {
+                return reply(response)
+            }
+        )
+        .catch((err) => {
+            return reply(response)
+        })
     }
 }
 

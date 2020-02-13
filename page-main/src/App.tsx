@@ -365,52 +365,57 @@ export class App extends React.Component<any, any> {
 
   handleStart() {
 
-    let rules: search.search_rule[] = []
-    for (let i = 0; i < this.state.totalSelectedStatus.length; i++) {
-      let rule: search.search_rule = new search.search_rule()
-      for (let j = 1; j <= this.state.totalSelectedStatus[i].length; j++) {
-        if (this.state.totalSelectedStatus[i][j - 1]) {
-          rule.nums.push(j)
+    ipc.api("checkLocalStatus").then(
+      (response) => {
+        let rules: search.search_rule[] = []
+        for (let i = 0; i < this.state.totalSelectedStatus.length; i++) {
+          let rule: search.search_rule = new search.search_rule()
+          for (let j = 1; j <= this.state.totalSelectedStatus[i].length; j++) {
+            if (this.state.totalSelectedStatus[i][j - 1]) {
+              rule.nums.push(j)
+            }
+          }
+          if (rule.nums.length === 0) {
+            continue
+          }
+
+          for (let j = 0; j < this.state.totalSelectedRange[i].length; j++) {
+            if (this.state.totalSelectedRange[i][j]) {
+              rule.show_count.push(j)
+            }
+          }
+          if (rule.show_count.length === 0) {
+            continue
+          }
+
+          rules.push(rule)
         }
-      }
-      if (rule.nums.length === 0) {
-        continue
-      }
 
-      for (let j = 0; j < this.state.totalSelectedRange[i].length; j++) {
-        if (this.state.totalSelectedRange[i][j]) {
-          rule.show_count.push(j)
+        let _odd: number = this.state.odd === "" ? -1 : Number(this.state.odd)
+        let _even: number = this.state.even === "" ? -1 : Number(this.state.even)
+        let _prime: number = this.state.prime === "" ? -1 : Number(this.state.prime)
+        let _composite: number = this.state.composite === "" ? -1 : Number(this.state.composite)
+        let _linking: number = this.state.linking === "" ? -1 : Number(this.state.linking)
+
+        ipc.api("modalShow")
+        if (!search.is_init()) {
+          search.init()
         }
-      }
-      if (rule.show_count.length === 0) {
-        continue
-      }
 
-      rules.push(rule)
-    }
+        let state: any = this.state
+        state.totalResults = search.search(_odd, _even, _prime, _composite, _linking, rules)
+        if (state.totalResults === null) {
+          state.totalResults = []
+          ipc.api("modalClose")
+          ipc.apiSend("messageDialog", "警告", `输入条件缺失, 请重新输入! X﹏X`)
+          return
+        }
+        ipc.apiSend("modalClose")
 
-    let _odd: number = this.state.odd === "" ? -1 : Number(this.state.odd)
-    let _even: number = this.state.even === "" ? -1 : Number(this.state.even)
-    let _prime: number = this.state.prime === "" ? -1 : Number(this.state.prime)
-    let _composite: number = this.state.composite === "" ? -1 : Number(this.state.composite)
-    let _linking: number = this.state.linking === "" ? -1 : Number(this.state.linking)
-
-    ipc.api("modalShow")
-    if (!search.is_init()) {
-      search.init()
-    }
-
-    let state: any = this.state
-    state.totalResults = search.search(_odd, _even, _prime, _composite, _linking, rules)
-    if (state.totalResults === null) {
-      state.totalResults = []
-      ipc.api("modalClose")
-      ipc.apiSend("messageDialog", "警告", `输入条件缺失, 请重新输入! X﹏X`)
-      return
-    }
-    ipc.apiSend("modalClose")
-
-    this.setState(state)
+        this.setState(state)
+      },
+      (response) => {}
+    )
   }
 
   handleCopy() {

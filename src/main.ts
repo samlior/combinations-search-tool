@@ -9,7 +9,7 @@ let mainWindow: Electron.BrowserWindow = null
 function terminate(err: any) {
   dialog.showMessageBox(mainWindow, {
       title: "警告",
-      message: `发生不可恢复错误, 请联系客服处理! (°ー°〃)\n\n${err}`
+      message: `完蛋, 发生不可恢复错误! (°ー°〃)\n\n${err}`
   }).then(() => {
       mainWindow.close()
   })
@@ -113,7 +113,7 @@ let template: any = [{
         label: '清空',
         accelerator: 'CmdOrCtrl+G',
         click: (item, focusedWindow) => {
-          focusedWindow.webContents.send("clearAll")
+          mainWindow.webContents.send("clearAll")
         }
       }
     ]
@@ -167,10 +167,37 @@ app.on('ready', () => {
   Menu.setApplicationMenu(menu)
 })
 
-/*
+let littleTemplate: any = [{
+    label: '清空',
+    accelerator: 'CmdOrCtrl+G',
+    click: (item, focusedWindow) => {
+      mainWindow.webContents.send("clearAll")
+    }
+  },
+  {
+    type: 'separator'
+  },{
+    label: '复制',
+    role: 'copy'
+  },
+  {
+    label: '粘贴',
+    role: 'paste'
+  },
+  {
+    type: 'separator'
+  },
+  {
+    label: '全选',
+    role: 'selectAll'
+  }
+]
+
+const littleMenu = Menu.buildFromTemplate(littleTemplate)
+
 app.on('browser-window-created', (event, win) => {
   win.webContents.on('context-menu', (e, params) => {
-    menu.popup({
+    littleMenu.popup({
       window: win,
       x: params.x,
       y: params.y
@@ -180,6 +207,5 @@ app.on('browser-window-created', (event, win) => {
 
 ipcMain.on('show-context-menu', (event) => {
   const win = BrowserWindow.fromWebContents(event.sender)
-  menu.popup({window: win})
+  littleMenu.popup({window: win})
 })
-*/

@@ -1,8 +1,6 @@
 import React from 'react';
 import "./ResultsBoard.css"
 
-let pp = 0 
-
 export class ResultsBoard extends React.Component<any, any> {
     /*
     render() {

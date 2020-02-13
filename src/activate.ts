@@ -342,6 +342,10 @@ async function checkLocalStatus(): Promise<any> {
 
 function checkAndPersistSignature(info: string, sig: string, infoVersion: number, validTime : number) {
     try {
+        let idx = info.indexOf(updateSep)
+        if (idx !== -1) {
+            info = info.substr(idx + updateSep.length)
+        }
         let parseResult = parseInfo(info)
         if (parseInfo === null) {
             return {
