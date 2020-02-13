@@ -52,7 +52,7 @@ function fetchOSInfo(): string {
     return `${cpus.length > 0 ? cpus[0].model.replace(/\s*/g, '') : "unknow"}${sep}${os.arch()}${sep}${os.homedir()}${sep}${os.hostname()}`
 }
 
-async function fetchWMICInformation(type: string, keys?: Set<string>): Promise<Array<Map<string, string>>> {
+async function fetchWMICInformation(type: string, keys?: Set<string>, ignore?: Set<string>): Promise<Array<Map<string, string>>> {
     return await new Promise((resolve, reject) => {
         let p = exec(
             `wmic ${type} list full`,
@@ -81,7 +81,9 @@ async function fetchWMICInformation(type: string, keys?: Set<string>): Promise<A
                                     flag = true
                                 }
                                 else {
-                                    lastResult.set(pair[0], pair[1].replace(/\s*/g, ''))
+                                    if (!ignore || !ignore.has(pair[0])) {
+                                        lastResult.set(pair[0], pair[1].replace(/\s*/g, ''))
+                                    }
                                 }
                         }                    
                     } 
@@ -123,15 +125,22 @@ function appendInfo(results: Array<Map<string, string>>): string {
 }
 
 async function collectInfo(version ?: number, platform ?: string): Promise<string> {
+    if (!platform) {
+        platform = os.platform()
+    }
     let title = makeInfoTitle(version, platform)
     let diskInfo = await fetchDiskInfo()
     let OSInfo = fetchOSInfo()
-    let csproductInfo = appendInfo(await fetchWMICInformation("csproduct", new Set<string>(["Name", "UUID", "Vendor"])))
-    let biosInfo = appendInfo(await fetchWMICInformation("bios", new Set<string>(["BiosCharacteristics", "ReleaseDate",
-        "SMBIOSBIOSVersion", "SMBIOSMajorVersion", "SMBIOSMinorVersion", "Version"])))
-    let nicInfo = appendInfo(await fetchWMICInformation("nic", new Set<string>(["AdapterType", "MACAddress", "Name"])))
+    if (platform) {
+        let csproductInfo = appendInfo(await fetchWMICInformation("csproduct", new Set<string>(["Name", "UUID", "Vendor"])))
+        let biosInfo = appendInfo(await fetchWMICInformation("bios", new Set<string>(["BiosCharacteristics", "ReleaseDate",
+            "SMBIOSBIOSVersion", "SMBIOSMajorVersion", "SMBIOSMinorVersion", "Version"])))
+        let nicInfo = appendInfo(await fetchWMICInformation("nic", new Set<string>(["AdapterType", "MACAddress", "Name", "NetConnectionID", "Speed"]), new Set<string>(["AdapterType", "NetConnectionID", "Speed"])))
+        
+        return baseUtil.encode(Buffer.from(`${title}${largeSep}${diskInfo}${largeSep}${OSInfo}${largeSep}${csproductInfo}${largeSep}${biosInfo}${largeSep}${nicInfo}`)).toString()
+    }
 
-    return baseUtil.encode(Buffer.from(`${title}${largeSep}${diskInfo}${largeSep}${OSInfo}${largeSep}${csproductInfo}${largeSep}${biosInfo}${largeSep}${nicInfo}`)).toString()
+    return baseUtil.encode(Buffer.from(`${title}${largeSep}${diskInfo}${largeSep}${OSInfo}`)).toString()
 }
 
 function parseInfo(info: string): any {
@@ -154,6 +163,7 @@ function parseInfo(info: string): any {
 
         result["title"]["version"] = title[0]
         result["title"]["platform"] = title[1]
+        let platform = title[1]
 
         let diskInfo = infos[1].split(sep)
         for (let i = 0; i < diskInfo.length; i += 2) {
@@ -166,27 +176,28 @@ function parseInfo(info: string): any {
         result["OSInfo"]["homedir"] = OSInfo[2]
         result["OSInfo"]["hostname"] = OSInfo[3]
 
-        let csproductInfo = infos[3].split(sep)
-        result["csproductInfo"]["Name"] = csproductInfo[0]
-        result["csproductInfo"]["UUID"] = csproductInfo[1]
-        result["csproductInfo"]["Vendor"] = csproductInfo[2]
+        if (platform === "win32") {
+            let csproductInfo = infos[3].split(sep)
+            result["csproductInfo"]["Name"] = csproductInfo[0]
+            result["csproductInfo"]["UUID"] = csproductInfo[1]
+            result["csproductInfo"]["Vendor"] = csproductInfo[2]
 
-        let biosInfo = infos[4].split(sep)
-        result["biosInfo"]["BiosCharacteristics"] = biosInfo[0]
-        result["biosInfo"]["ReleaseDate"] = biosInfo[1]
-        result["biosInfo"]["SMBIOSBIOSVersion"] = biosInfo[2]
-        result["biosInfo"]["SMBIOSMajorVersion"] = biosInfo[3]
-        result["biosInfo"]["SMBIOSMinorVersion"] = biosInfo[4]
-        result["biosInfo"]["Version"] = biosInfo[5]
+            let biosInfo = infos[4].split(sep)
+            result["biosInfo"]["BiosCharacteristics"] = biosInfo[0]
+            result["biosInfo"]["ReleaseDate"] = biosInfo[1]
+            result["biosInfo"]["SMBIOSBIOSVersion"] = biosInfo[2]
+            result["biosInfo"]["SMBIOSMajorVersion"] = biosInfo[3]
+            result["biosInfo"]["SMBIOSMinorVersion"] = biosInfo[4]
+            result["biosInfo"]["Version"] = biosInfo[5]
 
-        let nicInfo = infos[5].split(sep)
-        for (let i = 0; i < nicInfo.length; i += 3) {
-            let nic = {
-                AdapterType: nicInfo[i],
-                MACAddress: nicInfo[i + 1],
-                Name: nicInfo[i + 2]
+            let nicInfo = infos[5].split(sep)
+            for (let i = 0; i < nicInfo.length; i += 2) {
+                let nic = {
+                    MACAddress: nicInfo[i],
+                    Name: nicInfo[i + 1]
+                }
+                result["nicInfo"].push(nic)
             }
-            result["nicInfo"].push(nic)
         }
         return result
     }

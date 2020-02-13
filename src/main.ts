@@ -167,6 +167,7 @@ app.on('ready', () => {
   Menu.setApplicationMenu(menu)
 })
 
+/*
 app.on('browser-window-created', (event, win) => {
   win.webContents.on('context-menu', (e, params) => {
     menu.popup({
@@ -181,3 +182,4 @@ ipcMain.on('show-context-menu', (event) => {
   const win = BrowserWindow.fromWebContents(event.sender)
   menu.popup({window: win})
 })
+*/

@@ -10,6 +10,8 @@
 {
     display: flex;
     flex-wrap: wrap;
+
+    flex-grow: 1;
 }
 
 .div-app-flex-right
@@ -22,6 +24,7 @@
 .div-app-tips
 {
     margin-left: 15px;
+    position: relative;
 }
 
 .textarea-app
@@ -68,6 +71,7 @@
     align-self: flex-end;
     width: 150px;
     height: 30px;
+    margin-bottom: 15px;
 }
 
 .button-app:hover
@@ -79,4 +83,21 @@
 {
     background-color: rgb(26,27,29);
     color: white;
+}
+
+.img-app-wechat
+{
+    position: absolute;
+    top: 75%;
+    left: 90%;
+    transform: translate(-50%,-50%);
+    width: 130px;
+    height: 130px;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
 }

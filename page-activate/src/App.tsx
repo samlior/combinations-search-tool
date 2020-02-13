@@ -78,10 +78,11 @@ export class App extends React.Component<any, any> {
         <div className="div-app-tips">
           <h2>{this.state.title}</h2>
           <span style={{fontWeight: "bold"}}>激活提示:</span><br/>
-          <span>1. 添加客服微信123456789</span><br/>
+          <span>1. 通过微信号 876575640 或通过扫描右侧二维码添加客服微信</span><br/>
           <span>2. 将特征码复制给客服</span><br/>
           <span>3. 将客服回复的激活码输入下面的输入框中, 然后点击激活</span><br/>
           <span>4. 激活成功</span><br/>
+          <img className="img-app-wechat" src="./wechat.jpg"/>
         </div>
         <span className="span-app-tips">请复制特征码给客服:</span>
         <div className="div-app-flex">

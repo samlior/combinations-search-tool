@@ -5,16 +5,6 @@ async function bundleElectronApp(options) {
   const appPaths = await packager(options)
 }
 
-let packFileName = [
-    "/build",
-    "/html",
-    "/page-main/build",
-    "/page-activate/build",
-    "/node_modules",
-    "/package.json",
-    "/settings.js"
-]
-
 let appName = "组合检索工具"
 
 async function main() {
@@ -51,7 +41,7 @@ async function main() {
             if (fileName === "") {
                 return false
             }
-            for (let n of packFileName) {
+            for (let n of settings.packFileName) {
                 if (fileName.indexOf(n) === 0 || n.indexOf(fileName) === 0) {
                     console.log("pack:" + fileName)
                     return false
