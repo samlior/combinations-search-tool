@@ -22,7 +22,7 @@ function makeInfoTitle(version ?: number, platform ?: string): string {
     return `${version ? version : infoVersion}${sep}${platform ? platform : os.platform()}`
 }
 
-async function fetchDiskInfo(): Promise<string> {
+async function fetchDiskInfo(platform ?: string): Promise<string> {
     return await new Promise((resolve, reject) => {
         getDrives(function(err, devices) {
             if (err) {
@@ -35,12 +35,19 @@ async function fetchDiskInfo(): Promise<string> {
                 return
             }
 
+            if (!platform) {
+                platform = os.platform()
+            }
+
             let dInfo = ""
             for (let i = 0; i < devices.length; i++) {
-                if (devices[i].filesystem !== "Local Fixed Disk") {
+                if (platform === "win32" && devices[i].filesystem !== "Local Fixed Disk") {
                     continue
                 }
-                dInfo += `${devices[i].mounted}${sep}${devices[i].blocks}${sep}`
+                else if (platform !== "win32" && devices[i].filesystem[0] !== "/") {
+                    continue
+                }
+                dInfo += `${devices[i].filesystem.replace(/\s*/g, '')}${sep}${devices[i].mounted}${sep}${devices[i].blocks}${sep}`
             }
             resolve(dInfo.substr(0, dInfo.length - sep.length))
       });
@@ -129,9 +136,9 @@ async function collectInfo(version ?: number, platform ?: string): Promise<strin
         platform = os.platform()
     }
     let title = makeInfoTitle(version, platform)
-    let diskInfo = await fetchDiskInfo()
+    let diskInfo = await fetchDiskInfo(platform)
     let OSInfo = fetchOSInfo()
-    if (platform) {
+    if (platform === "win32") {
         let csproductInfo = appendInfo(await fetchWMICInformation("csproduct", new Set<string>(["Name", "UUID", "Vendor"])))
         let biosInfo = appendInfo(await fetchWMICInformation("bios", new Set<string>(["BiosCharacteristics", "ReleaseDate",
             "SMBIOSBIOSVersion", "SMBIOSMajorVersion", "SMBIOSMinorVersion", "Version"])))
@@ -148,7 +155,7 @@ function parseInfo(info: string): any {
         info = baseUtil.decode(info).toString()
         let result: any = {
             title: {},
-            diskInfo: {},
+            diskInfo: [],
             OSInfo: {},
             csproductInfo: {},
             biosInfo: {},
@@ -166,8 +173,12 @@ function parseInfo(info: string): any {
         let platform = title[1]
 
         let diskInfo = infos[1].split(sep)
-        for (let i = 0; i < diskInfo.length; i += 2) {
-            result["diskInfo"][diskInfo[i]] = diskInfo[i + 1]
+        for (let i = 0; i < diskInfo.length; i += 3) {
+            result["diskInfo"].push({
+                filesystem: diskInfo[i],
+                mounted: diskInfo[i + 1],
+                blocks: diskInfo[i + 2]
+            })
         }
 
         let OSInfo = infos[2].split(sep)
