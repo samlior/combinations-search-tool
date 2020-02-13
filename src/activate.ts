@@ -14,8 +14,9 @@ import { getDrives } from './diskInfo'
 
 let sep: string = "##"
 let largeSep: string = "@@"
+let updateSep: string = "SEP"
 let infoVersion = 1
-let privKey = "506a80889dd76682626b572d65b063cb659210d1608630fee683079a808cd25c"
+let privKey = "fuck off"
 let pubKey = "02f1c1b7aae0a31459364380849f550977b97d4c0247a62f9fe16b24aeea90136b"
 
 function makeInfoTitle(version ?: number, platform ?: string): string {
@@ -293,9 +294,10 @@ async function checkLocalStatus(): Promise<any> {
         versionEqual = data.info.version === infoVersion
         info = await collectInfo(data.info.version)
         if (info !== data.info.data) {
+            let tmpInfo = data.info.data + updateSep + (versionEqual ? info : await collectInfo())
             return {
                 status: "update",
-                info: (versionEqual ? info : await collectInfo()),
+                info: tmpInfo,
                 infoVersion: infoVersion
             }
         }

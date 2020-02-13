@@ -51,6 +51,7 @@ export class App extends React.Component<any, any> {
       if (result.status !== "success") {
         return ipc.apiSend("messageDialog", "警告", "激活码错误! X﹏X")
       }
+      
       if (result.validTime === -1) {
         ipc.api("buttonsDialog", "提示", "恭喜您激活成功! (๑•̀ㅂ•́)و✧").then(() => {
           ipc.apiSend("activateWindowClose")
