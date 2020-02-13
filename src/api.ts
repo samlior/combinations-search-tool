@@ -10,7 +10,7 @@ let api = {
     messageDialog: (reply, title: string, message: string) => {
         if (!title || !message)
             return
-        dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+        dialog.showMessageBox(BrowserWindow.fromId(1), {
             title: title,
             message : message,
             type: "info"
@@ -93,7 +93,7 @@ let api = {
                     nodeIntegration: true
                 },
                 width: 800,
-                parent: BrowserWindow.getFocusedWindow(),
+                parent: BrowserWindow.fromId(1),
                 modal: true,
                 frame: false
             });

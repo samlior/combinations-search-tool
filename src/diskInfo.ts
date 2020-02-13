@@ -27,13 +27,13 @@ function getDrives(callback) {
 			
 			// Run command to get list of drives
 			var oProcess = exec(
-				'wmic logicaldisk get Caption,FreeSpace,Size,VolumeSerialNumber,Description  /format:list',
+				'wmic logicaldisk get Caption,FreeSpace,Size,VolumeSerialNumber,Description,MediaType  /format:list',
 				function (err, stdout, stderr) {
 					if (err) return callback(err, null);
 					
 					var aLines = stdout.split('\r\r\n');
 					var bNew = false;
-					var sCaption = '', sDescription = '', sFreeSpace: any = '', sSize: any = '', sVolume = '';
+					var sCaption = '', sDescription = '', sFreeSpace: any = '', sSize: any = '', sVolume = '', sMediaType = '';
 					// For each line get information
 					// Format is Key=Value
 					for(var i = 0; i < aLines.length; i++) {						
@@ -55,6 +55,9 @@ function getDrives(callback) {
 									break;
 								case 'VolumeSerialNumber':
 									sVolume = aTokens[1];
+									break;
+								case 'MediaType':
+									sMediaType = aTokens[1];
 									break;
 							}
 						
@@ -83,7 +86,8 @@ function getDrives(callback) {
 														used:		sUsed,
 														available:	sFreeSpace,
 														capacity:	sPercent,
-														mounted:	sCaption
+														mounted:	sCaption,
+														type:		sMediaType
 													  };
 								bNew = false;
 								sCaption = ''; sDescription = ''; sFreeSpace = ''; sSize = ''; sVolume = '';
@@ -124,7 +128,8 @@ function getDrives(callback) {
 														used:		aTokens[2],
 														available:	aTokens[3],
 														capacity:	aTokens[4],
-														mounted:	aTokens[5]
+														mounted:	aTokens[5],
+														type: 		''
 													  };
 							
 						}

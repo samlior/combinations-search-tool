@@ -41,7 +41,7 @@ async function fetchDiskInfo(platform ?: string): Promise<string> {
 
             let dInfo = ""
             for (let i = 0; i < devices.length; i++) {
-                if (platform === "win32" && devices[i].filesystem !== "Local Fixed Disk") {
+                if (platform === "win32" && devices[i].type !== "12") {
                     continue
                 }
                 else if (platform !== "win32" && devices[i].filesystem[0] !== "/") {
@@ -55,8 +55,26 @@ async function fetchDiskInfo(platform ?: string): Promise<string> {
 }
 
 function fetchOSInfo(): string {
+    let macInfo: Set<string> = new Set<string>()
+    let nic = os.networkInterfaces()
+    for(let key in nic) {
+        let macArr = nic[key]
+        for (let mac of macArr) {
+            if (mac.mac !== "00:00:00:00:00:00") {
+                macInfo.add(mac.mac)
+            }
+        }
+    }
+    let strMacInfo = ""
+    macInfo.forEach((v) => {
+        strMacInfo += v + sep
+    })
+    if (strMacInfo.length > 0) {
+        strMacInfo = strMacInfo.substr(0, strMacInfo.length - sep.length)
+    }
+
     let cpus = os.cpus()
-    return `${cpus.length > 0 ? cpus[0].model.replace(/\s*/g, '') : "unknow"}${sep}${os.arch()}${sep}${os.homedir()}${sep}${os.hostname()}`
+    return `${cpus.length > 0 ? cpus[0].model.replace(/\s*/g, '') : "unknow"}${sep}${os.arch()}${sep}${os.homedir()}${sep}${os.hostname()}${sep}${strMacInfo}`
 }
 
 async function fetchWMICInformation(type: string, keys?: Set<string>, ignore?: Set<string>): Promise<Array<Map<string, string>>> {
@@ -142,9 +160,8 @@ async function collectInfo(version ?: number, platform ?: string): Promise<strin
         let csproductInfo = appendInfo(await fetchWMICInformation("csproduct", new Set<string>(["Name", "UUID", "Vendor"])))
         let biosInfo = appendInfo(await fetchWMICInformation("bios", new Set<string>(["BiosCharacteristics", "ReleaseDate",
             "SMBIOSBIOSVersion", "SMBIOSMajorVersion", "SMBIOSMinorVersion", "Version"])))
-        let nicInfo = appendInfo(await fetchWMICInformation("nic", new Set<string>(["AdapterType", "MACAddress", "Name", "NetConnectionID", "Speed"]), new Set<string>(["AdapterType", "NetConnectionID", "Speed"])))
         
-        return baseUtil.encode(Buffer.from(`${title}${largeSep}${diskInfo}${largeSep}${OSInfo}${largeSep}${csproductInfo}${largeSep}${biosInfo}${largeSep}${nicInfo}`)).toString()
+        return baseUtil.encode(Buffer.from(`${title}${largeSep}${diskInfo}${largeSep}${OSInfo}${largeSep}${csproductInfo}${largeSep}${biosInfo}`)).toString()
     }
 
     return baseUtil.encode(Buffer.from(`${title}${largeSep}${diskInfo}${largeSep}${OSInfo}`)).toString()
@@ -158,8 +175,7 @@ function parseInfo(info: string): any {
             diskInfo: [],
             OSInfo: {},
             csproductInfo: {},
-            biosInfo: {},
-            nicInfo: []
+            biosInfo: {}
         }
         let infos = info.split(largeSep)
         let title = infos[0].split(sep)
@@ -172,13 +188,15 @@ function parseInfo(info: string): any {
         result["title"]["platform"] = title[1]
         let platform = title[1]
 
-        let diskInfo = infos[1].split(sep)
-        for (let i = 0; i < diskInfo.length; i += 3) {
-            result["diskInfo"].push({
-                filesystem: diskInfo[i],
-                mounted: diskInfo[i + 1],
-                blocks: diskInfo[i + 2]
-            })
+        if (infos[1] !== "") {
+            let diskInfo = infos[1].split(sep)
+            for (let i = 0; i < diskInfo.length; i += 3) {
+                result["diskInfo"].push({
+                    filesystem: diskInfo[i],
+                    mounted: diskInfo[i + 1],
+                    blocks: diskInfo[i + 2]
+                })
+            }
         }
 
         let OSInfo = infos[2].split(sep)
@@ -186,6 +204,10 @@ function parseInfo(info: string): any {
         result["OSInfo"]["arch"] = OSInfo[1]
         result["OSInfo"]["homedir"] = OSInfo[2]
         result["OSInfo"]["hostname"] = OSInfo[3]
+        result["OSInfo"]["mac"] = []
+        for (let i = 4; i < OSInfo.length; i++) {
+            result["OSInfo"]["mac"].push(OSInfo[i])
+        }
 
         if (platform === "win32") {
             let csproductInfo = infos[3].split(sep)
@@ -200,15 +222,6 @@ function parseInfo(info: string): any {
             result["biosInfo"]["SMBIOSMajorVersion"] = biosInfo[3]
             result["biosInfo"]["SMBIOSMinorVersion"] = biosInfo[4]
             result["biosInfo"]["Version"] = biosInfo[5]
-
-            let nicInfo = infos[5].split(sep)
-            for (let i = 0; i < nicInfo.length; i += 2) {
-                let nic = {
-                    MACAddress: nicInfo[i],
-                    Name: nicInfo[i + 1]
-                }
-                result["nicInfo"].push(nic)
-            }
         }
         return result
     }
@@ -327,6 +340,18 @@ async function checkLocalStatus(): Promise<any> {
 
 function checkAndPersistSignature(info: string, sig: string, infoVersion: number, validTime : number) {
     try {
+        let parseResult = parseInfo(info)
+        if (parseInfo === null) {
+            return {
+                status: "illegal"
+            }
+        }
+        if (parseResult.title.platform !== os.platform()) {
+            return {
+                status: "illegal"
+            }
+        }
+
         let result = verify(info, sig, validTime)
         if (!result) {
             return {
