@@ -50,6 +50,7 @@ async function main() {
             console.log("ignore:" + fileName)
             return true
         },
+        electronZipDir: "./zip",
         name: appName,
         out: out,
         overwrite: true,
