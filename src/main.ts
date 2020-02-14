@@ -123,41 +123,49 @@ let template: any = [{
     role: 'viewMenu'
   },
   {
-    label: "激活状态",
-    click: () => {
-      checkLocalStatus().then((result) => {
-        if (result.status === "error") {
-          return terminate("checkLocalStatus status error")
-        }
-        else if (result.status === 'update' || result.status === 'activate' || result.status === 'expire') {
-          api.setActivateStatus(result)
-          api.activateWindowShow(()=>{})
-        }
-        else if (result.status === 'success') {
-          dialog.showMessageBox(mainWindow, {
-            type: "info",
-            buttons: ["ok"],
-            message: `激活状态: 成功\n有效期至: ${result.validTime}`,
-            title: "激活状态"
+    label: "关于",
+    submenu: [
+      {
+        label: "激活状态",
+        click: () => {
+          checkLocalStatus().then((result) => {
+            if (result.status === "error") {
+              return terminate("checkLocalStatus status error")
+            }
+            else if (result.status === 'update' || result.status === 'activate' || result.status === 'expire') {
+              api.setActivateStatus(result)
+              api.activateWindowShow(()=>{})
+            }
+            else if (result.status === 'success') {
+              dialog.showMessageBox(mainWindow, {
+                type: "info",
+                buttons: ["确定"],
+                message: `激活状态: 成功\n有效期至: ${result.validTime}`,
+                title: "激活状态"
+              })
+            }
+          }, (err) => {
+            terminate(err)
+          }).catch((err) => {
+            terminate(err)
           })
         }
-      }, (err) => {
-        terminate(err)
-      }).catch((err) => {
-        terminate(err)
-      })
-    }
-  },
-  {
-    label: "关于",
-    click: () => {
-      dialog.showMessageBox(mainWindow, {
-        type: "info",
-        buttons: ["ok"],
-        message: `版本: ${settings.version}\n作者: Alexier, Samlior\n联系方式: samlior@foxmail.com\n\nPowered By Electron, React and Typescript.`,
-        title: "关于此软件"
-      })
-    }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: "关于此软件",
+        click: () => {
+          dialog.showMessageBox(mainWindow, {
+            type: "info",
+            buttons: ["确定"],
+            message: `版本: ${settings.version}\n作者: Alexier, Samlior\n邮箱: samlior@foxmail.com\n微信号: ${settings.wechatCode}\n\nPowered By Electron, React and Typescript.`,
+            title: "关于此软件"
+          })
+        }
+      }
+    ]
   }
 ]
 
@@ -178,18 +186,21 @@ let littleTemplate: any = [{
     type: 'separator'
   },{
     label: '复制',
-    role: 'copy'
+    role: 'copy',
+    accelerator: 'CmdOrCtrl+C'
   },
   {
     label: '粘贴',
-    role: 'paste'
+    role: 'paste',
+    accelerator: 'CmdOrCtrl+V'
   },
   {
     type: 'separator'
   },
   {
     label: '全选',
-    role: 'selectAll'
+    role: 'selectAll',
+    accelerator: 'CmdOrCtrl+A'
   }
 ]
 

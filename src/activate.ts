@@ -45,7 +45,7 @@ async function fetchDiskInfo(platform ?: string): Promise<string> {
                 if (platform === "win32" && devices[i].type !== "12") {
                     continue
                 }
-                else if (platform !== "win32" && devices[i].filesystem[0] !== "/") {
+                else if (platform !== "win32" && devices[i].filesystem.indexOf("/dev") !== 0) {
                     continue
                 }
                 dInfo += `${devices[i].filesystem.replace(/\s*/g, '')}${sep}${devices[i].mounted}${sep}${devices[i].blocks}${sep}`

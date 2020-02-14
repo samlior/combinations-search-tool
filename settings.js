@@ -1,5 +1,6 @@
 module.exports = {
     version: "2.1.1",
+    wechatCode: "876575640",
     packFileName: [
         "/build",
         "/html",
