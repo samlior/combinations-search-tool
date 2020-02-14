@@ -16,6 +16,28 @@ function fillZero(num: number, len: number = 2): string {
     return str
 }
 
+export class NumberSelectorLine extends React.Component<any, any> {
+    render() {
+        let checkBoxs: any[] = []
+        for (let i = 0; i < this.props.numbers.length; i++) {
+            checkBoxs.push(
+                <input type="checkBox" 
+                    checked={this.props.selectedStatus[this.props.type ? this.props.numbers[i] - 1 : this.props.numbers[i]]}
+                    onChange={this.props.onChange}
+                    id={`input-checkbox-number-selector-${this.props.numbers[i]}`}/>
+            )
+
+            checkBoxs.push(<span className="span-number-selector-line">{fillZero(this.props.numbers[i])}</span>)
+        }
+
+        return (
+            <div className="div-number-selector-line">
+                {checkBoxs}
+            </div>
+        )
+    }
+}
+
 export class NumberSelector extends React.Component<any, any> {
 
     constructor(props) {
@@ -68,44 +90,49 @@ export class NumberSelector extends React.Component<any, any> {
     }
 
     render() {
-        let numberEachLine: number = 11        
+        let numberEachLine: number = 11
 
-        let checkBoxs: any[] = []
+        let lines: any[] = []
+        let subLineNumbers: number[] = []
         for (let i = 1; i <= this.props.maxNumber; i++) {
-            checkBoxs.push(
-                <input type="checkBox" 
-                    checked={this.props.selectedStatus[i - 1]}
-                    onChange={this.handleChange}
-                    id={`input-checkbox-number-selector-${i}`}/>
-            )
-
-            checkBoxs.push(<span>{fillZero(i)}</span>)
-
-            if (i % numberEachLine === 0) {
-                checkBoxs.push(<br/>)
+            subLineNumbers.push(i)
+            if (subLineNumbers.length % numberEachLine === 0) {
+                lines.push(<NumberSelectorLine
+                    type={true}
+                    numbers={subLineNumbers}
+                    selectedStatus={this.props.selectedStatus}
+                    onChange={this.handleChange}/>)
+                subLineNumbers = []
             }
         }
-        if (this.props.maxNumber % numberEachLine !== 0) {
-            checkBoxs.push(<br/>)
+        if (subLineNumbers.length > 0) {
+            lines.push(<NumberSelectorLine
+                type={true}
+                numbers={subLineNumbers}
+                selectedStatus={this.props.selectedStatus}
+                onChange={this.handleChange}/>)
+            subLineNumbers = []
         }
 
-        let selectCheckBox: any[] = []
+        let selectLines: any[] = []
         for (let i = 0; i <= this.props.selectCount; i++) {
-            selectCheckBox.push(
-                <input type="checkBox" 
-                    checked={this.props.selectedRangeStatus[i]}
-                    onChange={this.handleRangeChange}
-                    id={`input-checkbox-number-selector-range-${i}`}/>
-            )
-
-            selectCheckBox.push(<span>{fillZero(i)}</span>)
-
-            if ((i + 1) % numberEachLine === 0) {
-                selectCheckBox.push(<br/>)
+            subLineNumbers.push(i)
+            if (subLineNumbers.length % numberEachLine === 0) {
+                selectLines.push(<NumberSelectorLine 
+                    type={false}
+                    numbers={subLineNumbers}
+                    selectedStatus={this.props.selectedRangeStatus}
+                    onChange={this.handleRangeChange}/>)
+                subLineNumbers = []
             }
         }
-        if ((this.props.selectCount + 1) % numberEachLine !== 0) {
-            selectCheckBox.push(<br/>)
+        if (subLineNumbers.length > 0) {
+            selectLines.push(<NumberSelectorLine
+                type={false}
+                numbers={subLineNumbers}
+                selectedStatus={this.props.selectedRangeStatus}
+                onChange={this.handleRangeChange}/>)
+            subLineNumbers = []
         }
 
         return (
@@ -114,28 +141,20 @@ export class NumberSelector extends React.Component<any, any> {
                 <div className={this.props.show ? "div-number-selector-helper-visible" : "div-number-selector-helper-invisible"}>
                     <h2>条件{this.props.index + 1}:</h2>
                     <span className="span-number-selector-tips">选取数字:</span><br/>
-                    {checkBoxs}
+                    {lines}
                     <div className="div-number-selector-range">
                         <span className="span-number-selector-tips">选取出现次数:</span><br/>
-                        {selectCheckBox}
+                        {selectLines}
                     </div>
-                    <button className="button-number-selector-all" onClick={this.handleSelectedAllClick}>全选</button>
-                    <button className="button-number-selector-clear" onClick={this.handleSelectedClearClick}>清空</button>
-                    <button className="button-number-selector-delete" onClick={this.handleSelectedDeleteClick}>删除</button>
+                    <div className="div-number-selector-line">
+                        <button className="button-number-selector-all" onClick={this.handleSelectedAllClick}>全选</button>
+                        <button className="button-number-selector-clear" onClick={this.handleSelectedClearClick}>清空</button>
+                        <button className="button-number-selector-delete" onClick={this.handleSelectedDeleteClick}>删除</button>
+                    </div>
                 </div>
                 <img className={!this.props.show ? "img-number-selector-helper-visible" : "img-number-selector-helper-invisible"}
                     src="add.png" id="img-number-selector-add"/>
             </div>
         )
     }
-
 }
-
-
-/*
-<div className="div-input-number-selector">
-有  <input className="input-text-number-selector" 
-    type="number" min="0" max={this.props.selectCount} value={this.props.selectMin} onChange={this.handleSelectMinChange}/> —— <input className="input-text-number-selector" 
-    type="number" min="0" max={this.props.selectCount} value={this.props.selectMax} onChange={this.handleSelectMaxChange}/>  个
-</div>
-*/

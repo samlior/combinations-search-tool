@@ -5,7 +5,6 @@
     border-radius: 20px;
     border: none;
     width: 530px;
-    display: inline-block;
     margin-left: 15px;
     margin-top: 15px;
     position: relative;
@@ -98,6 +97,12 @@
     margin-top: 15px;
 }
 
+.div-number-selector-helper-visible,.div-number-selector-helper-invisible
+{
+    display: flex;
+    flex-direction: column;
+}
+
 .div-number-selector-helper-invisible,.img-number-selector-helper-invisible
 {
     visibility: hidden;
@@ -107,6 +112,16 @@
     margin-bottom: -15px;
     font-weight: bold;
     display: block;
+}
+
+.div-number-selector-line
+{
+    display: flex;
+}
+
+.span-number-selector-line
+{
+    width: 20px;
 }
 
 input[type="checkbox"]
