@@ -1,7 +1,6 @@
 import React from 'react';
 import "./App.css"
 import { ipc } from './ipc'
-import * as settings from '../../settings'
 
 export class App extends React.Component<any, any> {
 
@@ -16,7 +15,8 @@ export class App extends React.Component<any, any> {
     this.state = {
       info: "",
       sig: "",
-      title: ""
+      title: "",
+      wechatCode: ""
     }
 
     ipc.api("getActivateStatus").then((response: any) => {
@@ -32,6 +32,12 @@ export class App extends React.Component<any, any> {
         state.title = "您的激活码已到期, 请重新激活程序! (°ー°〃)"
       }
       state.info = result.info
+      this.setState(state)
+    })
+
+    ipc.api("wechatCode").then((response: any) => {
+      let state: any = this.state
+      state.wechatCode = response.wechatCode
       this.setState(state)
     })
   }
@@ -80,7 +86,7 @@ export class App extends React.Component<any, any> {
         <div className="div-app-tips">
           <h2>{this.state.title}</h2>
           <span style={{fontWeight: "bold"}}>激活提示:</span><br/>
-          <span>1. 通过微信号 {settings.wechatCode} 或通过扫描右侧二维码添加客服微信</span><br/>
+          <span>1. 通过微信号 {this.state.wechatCode} 或通过扫描右侧二维码添加客服微信</span><br/>
           <span>2. 将特征码复制给客服</span><br/>
           <span>3. 将客服回复的激活码输入下面的输入框中, 然后点击激活</span><br/>
           <span>4. 激活成功</span><br/>

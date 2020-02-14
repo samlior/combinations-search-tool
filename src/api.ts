@@ -1,6 +1,7 @@
 import { app, dialog, BrowserWindow, clipboard } from "electron";
 import * as path from 'path'
 import { checkLocalStatus, checkAndPersistTotalSignature } from './activate'
+import * as settings from '../settings'
 
 let modalWin: BrowserWindow = null
 let activateWindow: Electron.BrowserWindow = null
@@ -146,6 +147,12 @@ let api = {
         )
         .catch((err) => {
             return reply(response)
+        })
+    },
+    wechatCode: (reply) => {
+        reply({
+            success: true,
+            wechatCode: settings.wechatCode
         })
     }
 }
