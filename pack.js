@@ -41,6 +41,9 @@ async function main() {
             if (fileName === "") {
                 return false
             }
+            if (fileName.indexOf(".bin") !== -1) {
+                return true
+            }
             for (let n of settings.packFileName) {
                 if (fileName.indexOf(n) === 0 || n.indexOf(fileName) === 0) {
                     console.log("pack:" + fileName)
