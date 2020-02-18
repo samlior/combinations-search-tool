@@ -1,0 +1,133 @@
+.div-app
+{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.div-app-flex-right
+{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+}
+
+.button-app
+{
+    outline: none;
+    border: none;
+    color: rgb(32,33,36);
+    background-color: rgb(80,250,123);
+    padding: 3px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-right: 15px;
+    border-radius: 10px;
+    align-self: flex-end;
+    width: 150px;
+    height: 30px;
+    margin-bottom: 15px;
+}
+
+.button-app:hover
+{
+    background-color: rgb(5, 179, 48);
+}
+
+.button-app:active
+{
+    background-color: rgb(26,27,29);
+    color: white;
+}
+
+.textarea-app
+{
+    outline: none;
+    resize: none;
+    margin-left: 15px;
+    margin-right: 15px;
+    height: 150px;
+    overflow: auto;
+    white-space: pre-line;
+    flex-grow: 1;
+    padding: 15px;
+    border-radius: 20px;
+    color: white;
+    background-color: rgb(26,27,29);
+    border: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+}
+
+.div-app-title
+{
+    margin-left: 15px;
+}
+
+.div-app-grow
+{
+    flex-grow: 1;
+    padding: 3px;
+}
+
+.div-app-checkbox
+{
+    margin-top: 15px;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.span-app
+{
+    margin-left: 5px;
+    font-weight: bold;
+}
+
+input[type="checkbox"]
+{
+    -webkit-appearance: none;
+    vertical-align: middle;
+    margin-top: 5px;
+    background:#fff;
+    border: none;
+    border-radius: 5px;
+    min-height: 12px;
+    min-width: 12px;
+    position: relative;
+
+    width: 20px;
+    height: 20px;
+
+    outline: none;
+
+    top: -3px;
+}
+
+input[type="checkbox"]:checked
+{
+    background: rgb(80,250,123);
+}
+
+input[type="checkbox"]:checked::after
+{
+    content: '';
+    top: 3px;
+    left: 3px;
+    position: absolute;
+    background: transparent;
+    border: #fff solid 2px;
+    border-top: none;
+    border-right: none;
+    height: 6px;
+    width: 10px;
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg); 
+    transform: rotate(-45deg);
+
+    border-bottom: 3px solid rgb(26,27,29);/*设置√的颜色*/
+    border-left: 3px solid rgb(26,27,29);/*设置√的颜色*/
+}

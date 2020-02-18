@@ -4,11 +4,6 @@ import "./NumberSelectorBoard.css"
 import { NumberSelector } from './NumberSelector';
 
 export class NumberSelectorBoard extends React.Component<any, any> {
-
-    constructor(props) {
-        super(props)
-    }
-
     render() {
         let selectors: any[] = []
         selectors.push(this.props.makeSettingsBoard())

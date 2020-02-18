@@ -139,7 +139,7 @@ let template: any = [{
             else if (result.status === 'success') {
               dialog.showMessageBox(mainWindow, {
                 type: "info",
-                buttons: ["确定"],
+                buttons: ["ok"],
                 message: `激活状态: 成功\n有效期至: ${result.validTime}`,
                 title: "激活状态"
               })
@@ -159,8 +159,8 @@ let template: any = [{
         click: () => {
           dialog.showMessageBox(mainWindow, {
             type: "info",
-            buttons: ["确定"],
-            message: `版本: ${settings.version}\n作者: Alexier, Samlior\n邮箱: samlior@foxmail.com\n微信号: ${settings.wechatCode}\n\nPowered By Electron, React and Typescript.`,
+            buttons: ["ok"],
+            message: `版本: ${settings.version}\n作者: Alexier, Samlior\n邮箱: samlior@foxmail.com\n微信号: ${settings.wechatCode}\n\nPowered by Electron, React and Typescript.`,
             title: "关于此软件"
           })
         }

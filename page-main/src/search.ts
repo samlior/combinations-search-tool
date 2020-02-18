@@ -8,7 +8,7 @@ function deep_copy_arr(arr: number[]) {
 
 function not_in(arr: number[], n: number) {
     for (let e of arr) {
-        if (e == n) {
+        if (e === n) {
             return false
         }
     }
@@ -18,7 +18,7 @@ function not_in(arr: number[], n: number) {
 let total_result: number[][] = []
 
 export function is_init() {
-    return total_result.length != 0
+    return total_result.length !== 0
 }
 
 export function clear() {
@@ -29,11 +29,11 @@ export let selected_count: number = 6
 export let total_count: number = 33
 
 export function init(arr: number[] = []) {
-    if (arr.length == selected_count) {
+    if (arr.length === selected_count) {
         total_result.push(arr)
         return
     }
-    for (let i = arr.length == 0 ? 1 : arr[arr.length - 1] + 1; i <= total_count; i++) {
+    for (let i = arr.length === 0 ? 1 : arr[arr.length - 1] + 1; i <= total_count; i++) {
         let new_arr = deep_copy_arr(arr)
         new_arr.push(i)
         init(new_arr)
@@ -63,7 +63,7 @@ function find_first_linking(arr: number[], num: number) {
 }
 
 export function search(odd: number, even: number, prime: number, composite: number, linking: number, rules: search_rule[]): number[][] {
-    if (odd + even + prime + composite + linking == -5 && rules.length == 0) {
+    if (odd + even + prime + composite + linking === -5 && rules.length === 0) {
         return null
     }
 
@@ -81,10 +81,10 @@ export function search(odd: number, even: number, prime: number, composite: numb
             rule_count.push(0)
         }
         for (let num of result) {
-            if (num % 2 == 1) {
+            if (num % 2 === 1) {
                 _odd++
             }
-            if (num % 2 == 0) {
+            if (num % 2 === 0) {
                 _even++
             }
             if (!not_in(total_prime, num)) {
@@ -94,7 +94,7 @@ export function search(odd: number, even: number, prime: number, composite: numb
                 _composite++
             }
             for (let tmp_num of tmp_arr) {
-                if (tmp_num == num - 1) {
+                if (tmp_num === num - 1) {
                     _linking++
                     let first_linking = find_first_linking(tmp_arr, num - 1)
                     if (first_linking && not_in(tmp_first_linking_arr, first_linking)) {
@@ -120,11 +120,11 @@ export function search(odd: number, even: number, prime: number, composite: numb
             }
         }
         let b = rule_flag &&
-            (_odd == odd || odd == -1) &&
-            (_even == even || even == -1) &&
-            (_prime == prime || prime == -1) &&
-            (_composite == composite || composite == -1) &&
-            (_linking == linking || linking == -1)
+            (_odd === odd || odd === -1) &&
+            (_even === even || even === -1) &&
+            (_prime === prime || prime === -1) &&
+            (_composite === composite || composite === -1) &&
+            (_linking === linking || linking === -1)
         if (b) {
             legal_result.push(result)
         }

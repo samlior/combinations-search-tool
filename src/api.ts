@@ -3,8 +3,9 @@ import * as path from 'path'
 import { checkLocalStatus, checkAndPersistTotalSignature } from './activate'
 import * as settings from '../settings'
 
-let modalWin: BrowserWindow = null
-let activateWindow: Electron.BrowserWindow = null
+let modalWindow: BrowserWindow = null
+let activateWindow: BrowserWindow = null
+let agreementWindow: BrowserWindow = null
 let activateStatus: any = null
 
 let api = {
@@ -45,8 +46,8 @@ let api = {
         })
     },
     modalShow: (reply) => {
-        if (modalWin === null) {
-            modalWin = new BrowserWindow({
+        if (modalWindow === null) {
+            modalWindow = new BrowserWindow({
                 width: 400,
                 height: 320,
                 parent: BrowserWindow.getFocusedWindow(),
@@ -54,16 +55,16 @@ let api = {
                 frame: false
             });
 
-            modalWin.on('close', () => { modalWin = null })
-            modalWin.loadURL(path.join('file://', __dirname, '../html/modal.html'))
-            modalWin.show()
+            modalWindow.on('close', () => { modalWindow = null })
+            modalWindow.loadURL(path.join('file://', __dirname, '../html/modal.html'))
+            modalWindow.show()
         }
         reply({success: true})
     },
     modalClose: (reply) => {
-        if (modalWin !== null) {
-            modalWin.close()
-            modalWin = null
+        if (modalWindow !== null) {
+            modalWindow.close()
+            modalWindow = null
         }
         reply({success: true})
     },
@@ -110,6 +111,32 @@ let api = {
             activateWindow.close()
             activateWindow = null
         }
+
+        if (agreementWindow === null) {
+            agreementWindow = new BrowserWindow({
+                height: 350,
+                webPreferences: {
+                    nodeIntegration: true
+                },
+                width: 600,
+                parent: BrowserWindow.fromId(1),
+                modal: true,
+                frame: false
+            });
+    
+            agreementWindow.on('close', () => { agreementWindow = null })
+            agreementWindow.loadURL(path.join('file://', __dirname, '../page-agreement/build/index.html'))
+            agreementWindow.show()
+        }
+
+        reply({success: true})
+    },
+    agreementWindowClose: (reply) => {
+        if (agreementWindow !== null) {
+            agreementWindow.close()
+            agreementWindow = null
+        }
+
         reply({success: true})
     },
     checkSignature: (reply, totalSignature) => {       

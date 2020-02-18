@@ -155,17 +155,16 @@ async function collectInfo(version ?: number, platform ?: string): Promise<strin
         platform = os.platform()
     }
     let title = makeInfoTitle(version, platform)
-    let diskInfo = await fetchDiskInfo(platform)
     let OSInfo = fetchOSInfo()
     if (platform === "win32") {
         let csproductInfo = appendInfo(await fetchWMICInformation("csproduct", new Set<string>(["Name", "UUID", "Vendor"])))
         let biosInfo = appendInfo(await fetchWMICInformation("bios", new Set<string>(["BiosCharacteristics", "ReleaseDate",
             "SMBIOSBIOSVersion", "SMBIOSMajorVersion", "SMBIOSMinorVersion", "Version"])))
         
-        return baseUtil.encode(Buffer.from(`${title}${largeSep}${diskInfo}${largeSep}${OSInfo}${largeSep}${csproductInfo}${largeSep}${biosInfo}`)).toString()
+        return baseUtil.encode(Buffer.from(`${title}${largeSep}${OSInfo}${largeSep}${csproductInfo}${largeSep}${biosInfo}`)).toString()
     }
 
-    return baseUtil.encode(Buffer.from(`${title}${largeSep}${diskInfo}${largeSep}${OSInfo}`)).toString()
+    return baseUtil.encode(Buffer.from(`${title}${largeSep}${OSInfo}`)).toString()
 }
 
 function parseInfo(info: string): any {
@@ -173,7 +172,6 @@ function parseInfo(info: string): any {
         info = baseUtil.decode(info).toString()
         let result: any = {
             title: {},
-            diskInfo: [],
             OSInfo: {},
             csproductInfo: {},
             biosInfo: {}
@@ -189,18 +187,7 @@ function parseInfo(info: string): any {
         result["title"]["platform"] = title[1]
         let platform = title[1]
 
-        if (infos[1] !== "") {
-            let diskInfo = infos[1].split(sep)
-            for (let i = 0; i < diskInfo.length; i += 3) {
-                result["diskInfo"].push({
-                    filesystem: diskInfo[i],
-                    mounted: diskInfo[i + 1],
-                    blocks: diskInfo[i + 2]
-                })
-            }
-        }
-
-        let OSInfo = infos[2].split(sep)
+        let OSInfo = infos[1].split(sep)
         result["OSInfo"]["cpu"] = OSInfo[0]
         result["OSInfo"]["arch"] = OSInfo[1]
         result["OSInfo"]["homedir"] = OSInfo[2]
@@ -211,12 +198,12 @@ function parseInfo(info: string): any {
         }
 
         if (platform === "win32") {
-            let csproductInfo = infos[3].split(sep)
+            let csproductInfo = infos[2].split(sep)
             result["csproductInfo"]["Name"] = csproductInfo[0]
             result["csproductInfo"]["UUID"] = csproductInfo[1]
             result["csproductInfo"]["Vendor"] = csproductInfo[2]
 
-            let biosInfo = infos[4].split(sep)
+            let biosInfo = infos[3].split(sep)
             result["biosInfo"]["BiosCharacteristics"] = biosInfo[0]
             result["biosInfo"]["ReleaseDate"] = biosInfo[1]
             result["biosInfo"]["SMBIOSBIOSVersion"] = biosInfo[2]
