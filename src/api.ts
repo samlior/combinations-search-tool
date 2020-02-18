@@ -12,7 +12,7 @@ let api = {
     messageDialog: (reply, title: string, message: string) => {
         if (!title || !message)
             return
-        dialog.showMessageBox(BrowserWindow.fromId(1), {
+        dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
             title: title,
             message : message,
             type: "info"
