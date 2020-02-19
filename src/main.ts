@@ -61,7 +61,7 @@ function createWindow() {
         result.status === 'missing') {
 
           api.setActivateStatus(result)
-          
+
           if (result.status === 'missing') {
             api.agreementWindowShow(()=>{})
           }
@@ -142,7 +142,11 @@ let template: any = [{
             if (result.status === "error") {
               return terminate("checkLocalStatus status error")
             }
-            else if (result.status === 'update' || result.status === 'activate' || result.status === 'expire') {
+            else if (result.status === 'update' ||
+              result.status === 'activate' ||
+              result.status === 'expire' ||
+              result.status === 'missing') {
+              
               api.setActivateStatus(result)
               api.activateWindowShow(()=>{})
             }

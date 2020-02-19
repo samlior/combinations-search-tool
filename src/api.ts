@@ -139,7 +139,7 @@ let api = {
             agreementWindow.close()
             agreementWindow = null
         }
-        
+
         api.activateWindowShow(()=>{})
         reply({success: true})
     },
@@ -162,7 +162,11 @@ let api = {
                 if (result.status === "error") {
                     return reply(response)
                 }
-                else if (result.status === 'update' || result.status === 'activate' || result.status === 'expire') {
+                else if (result.status === 'update' ||
+                    result.status === 'activate' ||
+                    result.status === 'expire' ||
+                    result.status === 'missing') {
+                        
                     api.setActivateStatus(result)
                     api.activateWindowShow(()=>{})
                     return reply(response)
