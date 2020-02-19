@@ -112,6 +112,9 @@ let api = {
             activateWindow = null
         }
 
+        reply({success: true})
+    },
+    agreementWindowShow: (reply) => {
         if (agreementWindow === null) {
             agreementWindow = new BrowserWindow({
                 height: 350,
@@ -136,7 +139,8 @@ let api = {
             agreementWindow.close()
             agreementWindow = null
         }
-
+        
+        api.activateWindowShow(()=>{})
         reply({success: true})
     },
     checkSignature: (reply, totalSignature) => {       

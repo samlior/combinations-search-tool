@@ -143,7 +143,7 @@ export class NumberSelector extends React.Component<any, any> {
                     <span className="span-number-selector-tips">选取数字:</span><br/>
                     {lines}
                     <div className="div-number-selector-range">
-                        <span className="span-number-selector-tips">选取出现次数:</span><br/>
+                        <span className="span-number-selector-tips">选取出现个数:</span><br/>
                         {selectLines}
                     </div>
                     <div className="div-number-selector-line">

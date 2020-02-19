@@ -55,9 +55,19 @@ function createWindow() {
       if (result.status === "error") {
         return terminate("checkLocalStatus status error")
       }
-      else if (result.status === 'update' || result.status === 'activate' || result.status === 'expire') {
-        api.setActivateStatus(result)
-        api.activateWindowShow(()=>{})
+      else if (result.status === 'update' ||
+        result.status === 'activate' ||
+        result.status === 'expire' ||
+        result.status === 'missing') {
+
+          api.setActivateStatus(result)
+          
+          if (result.status === 'missing') {
+            api.agreementWindowShow(()=>{})
+          }
+          else {
+            api.activateWindowShow(()=>{})
+          }
       }
     }, (err) => {
       terminate(err)

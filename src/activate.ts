@@ -277,6 +277,13 @@ async function checkLocalStatus(): Promise<any> {
     let info: any = ""
     let versionEqual = false
     try {
+        if (!fs.existsSync(path.join(os.homedir(), ".userSettings.json"))) {
+            return {
+                status: "missing",
+                info: await collectInfo(),
+                infoVersion: infoVersion
+            }
+        }
         let data = JSON.parse(fs.readFileSync(path.join(os.homedir(), ".userSettings.json")).toString())
         versionEqual = data.info.version === infoVersion
         info = await collectInfo(data.info.version)
