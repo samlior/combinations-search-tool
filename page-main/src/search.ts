@@ -51,6 +51,15 @@ export class search_rule {
     show_count: number[] = []
 }
 
+export class sum_rule {
+    min: number
+    max: number
+    constructor(_min: number, _max: number) {
+        this.min = _min
+        this.max = _max
+    }
+}
+
 const total_prime: number[] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
 const total_composite: number[] = [4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30, 32, 33, 34, 35, 36, 38, 39, 40, 42, 44, 45, 46, 48, 49, 50, 51, 52, 54, 55, 56, 57, 58, 60, 62, 63, 64, 65, 66, 68, 69, 70, 72, 74, 75, 76, 77, 78, 80, 81, 82, 84, 85, 86, 87, 88, 90, 91, 92, 93, 94, 95, 96, 98, 99, 100]
 
@@ -62,8 +71,18 @@ function find_first_linking(arr: number[], num: number) {
     return !not_in(arr, num) ? num : null
 }
 
-export function search(odd: number, even: number, prime: number, composite: number, linking: number, rules: search_rule[]): number[][] {
-    if (odd + even + prime + composite + linking === -5 && rules.length === 0) {
+export function search(
+    odd: number,
+    even: number,
+    prime: number,
+    composite: number,
+    linking: number,
+    rules: search_rule[],
+    sum_rules: sum_rule[]): number[][]
+{
+    if (odd + even + prime + composite + linking === -5 &&
+        rules.length === 0 &&
+        sum_rules.length === 0) {
         return null
     }
 
@@ -73,6 +92,7 @@ export function search(odd: number, even: number, prime: number, composite: numb
 
     let legal_result: number[][] = []
     for (let result of total_result) {
+        let sum: number = 0
         let _odd = 0, _even = 0, _prime = 0, _composite = 0, _linking = 0
         let tmp_arr: number[] = []
         let tmp_first_linking_arr: number[] = []
@@ -111,6 +131,8 @@ export function search(odd: number, even: number, prime: number, composite: numb
                     rule_count[l]++
                 }
             }
+
+            sum += num
         }
         let rule_flag = true
         for (let l = 0; l < rules.length; l++) {
@@ -119,7 +141,16 @@ export function search(odd: number, even: number, prime: number, composite: numb
                 break
             }
         }
-        let b = rule_flag &&
+
+        let sum_rule_flag = sum_rules.length === 0
+        for (let sr of sum_rules) {
+            if (sum >= sr.min && sum <= sr.max) {
+                sum_rule_flag = true
+                break
+            }
+        }
+
+        let b = sum_rule_flag && rule_flag &&
             (_odd === odd || odd === -1) &&
             (_even === even || even === -1) &&
             (_prime === prime || prime === -1) &&

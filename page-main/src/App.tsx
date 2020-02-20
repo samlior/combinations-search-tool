@@ -46,20 +46,45 @@ export class App extends React.Component<any, any> {
     this.makeNumberCountBoard = this.makeNumberCountBoard.bind(this)
     this.makeSumSettings = this.makeSumSettings.bind(this)
 
+    this.handleMinChange = this.handleMinChange.bind(this)
+    this.handleMaxChange = this.handleMaxChange.bind(this)
+    this.handleMinMaxClear = this.handleMinMaxClear.bind(this)
+
     this.state = {
+      // 可选数字的状态.
       totalSelectedStatus: [],
+      // 可选数字出现个数的状态.
       totalSelectedRange: [],
+      // 条件数量.
       rulesCount: 1,
+      // 最大可选数字.
       maxNumber: search.total_count,
+      // 需要选取的数字的个数.
       selectCount: search.selected_count,
+      // 临时记录的最大可选数字.
       tmpMaxNumber: search.total_count,
+      // 临时记录的需要选取的数字的个数.
       tmpSelectCount: search.selected_count,
+      // 奇数出现次数.
       odd: "",
+      // 偶数出现的次数.
       even: "",
+      // 质数出现的次数.
       prime: "",
+      // 合数出现的次数.
       composite: "",
+      // 连数出现的次数.
       linking: "",
-      totalResults: []
+      // 检索结果集.
+      totalResults: [],
+      // 和值范围集.
+      sumSettings: [
+        ["", ""],
+        ["", ""],
+        ["", ""],
+        ["", ""],
+        ["", ""]
+      ]
     }
 
     for (let i = 0; i < this.state.rulesCount; i++) {
@@ -202,6 +227,13 @@ export class App extends React.Component<any, any> {
     state.composite = ""
     state.linking = ""
     state.totalResults = []
+    state.sumSettings = [
+      ["", ""],
+      ["", ""],
+      ["", ""],
+      ["", ""],
+      ["", ""]
+    ]
   }
 
   handleSettingsConfirm() {
@@ -310,22 +342,34 @@ export class App extends React.Component<any, any> {
           rules.push(rule)
         }
 
+        let sum_rules: search.sum_rule[] = []
+        for (let sr of this.state.sumSettings) {
+          if (sr[0] !== "" && sr[1] !== "") {
+            let srInfo = new search.sum_rule(Number(sr[0]), Number(sr[1]))
+            if (srInfo.min > srInfo.max) {
+              ipc.apiSend("messageDialog", "警告", `和值范围设置非法! X﹏X`)
+              return
+            }
+            sum_rules.push(srInfo)
+          }
+        }
+
         let _odd: number = this.state.odd === "" ? -1 : Number(this.state.odd)
         let _even: number = this.state.even === "" ? -1 : Number(this.state.even)
         let _prime: number = this.state.prime === "" ? -1 : Number(this.state.prime)
         let _composite: number = this.state.composite === "" ? -1 : Number(this.state.composite)
         let _linking: number = this.state.linking === "" ? -1 : Number(this.state.linking)
 
-        ipc.api("modalShow")
+        ipc.apiSend("modalShow")
         if (!search.is_init()) {
           search.init()
         }
 
         let state: any = this.state
-        state.totalResults = search.search(_odd, _even, _prime, _composite, _linking, rules)
+        state.totalResults = search.search(_odd, _even, _prime, _composite, _linking, rules, sum_rules)
         if (state.totalResults === null) {
           state.totalResults = []
-          ipc.api("modalClose")
+          ipc.apiSend("modalClose")
           ipc.apiSend("messageDialog", "警告", `输入条件缺失, 请重新输入! X﹏X`)
           return
         }
@@ -340,6 +384,25 @@ export class App extends React.Component<any, any> {
   handleCopy() {
     let result = this.makeResult()
     ipc.apiSend("copyData", result)
+  }
+
+  handleMinChange(index, value) {
+    let state = this.state
+    state.sumSettings[index][0] = value
+    this.setState(state)
+  }
+
+  handleMaxChange(index, value) {
+    let state = this.state
+    state.sumSettings[index][1] = value
+    this.setState(state)
+  }
+
+  handleMinMaxClear(index) {
+    let state = this.state
+    state.sumSettings[index][0] = ""
+    state.sumSettings[index][1] = ""
+    this.setState(state)
   }
 
   makeResultLine(result: number[]): string {
@@ -378,7 +441,11 @@ export class App extends React.Component<any, any> {
 
   makeSumSettings() {
     return (
-      <SumSettings />
+      <SumSettings
+        sumSettings={this.state.sumSettings}
+        onClear={this.handleMinMaxClear}
+        onMinChange={this.handleMinChange}
+        onMaxChange={this.handleMaxChange}/>
     )
   }
 
