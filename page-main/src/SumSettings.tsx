@@ -45,10 +45,10 @@ export class SumSettings extends React.Component<any, any> {
                 <div className={i === 0 ? "div-sum-settings-first-line" : "div-sum-settings-line"}>
                     <span>范围{ i + 1 }: </span>
                     <input id={ `input-text-sum-settings-min-${i}` } 
-                        className="input-text-sum-settings-min" type="number" min="0" value={this.props.sumSettings[i][0]} onChange={this.handleMinChange}/>
+                        className="input-text-sum-settings-min" type="number" min="1" value={this.props.sumSettings[i][0]} onChange={this.handleMinChange}/>
                     <span>-</span>
                     <input id={ `input-text-sum-settings-max-${i}` }
-                        className="input-text-sum-settings-max" type="number" min="0" value={this.props.sumSettings[i][1]} onChange={this.handleMaxChange}/>
+                        className="input-text-sum-settings-max" type="number" min="1" value={this.props.sumSettings[i][1]} onChange={this.handleMaxChange}/>
                     <button id={ `button-sum-settings-${i}` } className="button-sum-settings" onClick={this.handleClick}>
                         清空
                     </button>

@@ -344,13 +344,20 @@ export class App extends React.Component<any, any> {
 
         let sum_rules: search.sum_rule[] = []
         for (let sr of this.state.sumSettings) {
-          if (sr[0] !== "" && sr[1] !== "") {
+          if (sr[0] === "" && sr[1] === "") {
+            continue
+          }
+          else if (sr[0] !== "" && sr[1] !== "") {
             let srInfo = new search.sum_rule(Number(sr[0]), Number(sr[1]))
             if (srInfo.min > srInfo.max) {
               ipc.apiSend("messageDialog", "警告", `和值范围设置非法! X﹏X`)
               return
             }
             sum_rules.push(srInfo)
+          }
+          else {
+            ipc.apiSend("messageDialog", "警告", `和值范围设置最小值或最大值有一个为空! X﹏X`)
+            return
           }
         }
 

@@ -56,6 +56,7 @@ async function fetchDiskInfo(platform ?: string): Promise<string> {
 }
 
 function fetchOSInfo(): string {
+    /*
     let macInfo: Set<string> = new Set<string>()
     let nic = os.networkInterfaces()
     for(let key in nic) {
@@ -73,9 +74,10 @@ function fetchOSInfo(): string {
     if (strMacInfo.length > 0) {
         strMacInfo = strMacInfo.substr(0, strMacInfo.length - sep.length)
     }
+    */
 
     let cpus = os.cpus()
-    return `${cpus.length > 0 ? cpus[0].model.replace(/\s*/g, '') : "unknow"}${sep}${os.arch()}${sep}${os.homedir()}${sep}${os.hostname()}${sep}${strMacInfo}`
+    return `${cpus.length > 0 ? cpus[0].model.replace(/\s*/g, '') : "unknow"}${sep}${os.arch()}${sep}${os.homedir()}${sep}${os.hostname()}`
 }
 
 async function fetchWMICInformation(type: string, keys?: Set<string>, ignore?: Set<string>): Promise<Array<Map<string, string>>> {
@@ -192,10 +194,6 @@ function parseInfo(info: string): any {
         result["OSInfo"]["arch"] = OSInfo[1]
         result["OSInfo"]["homedir"] = OSInfo[2]
         result["OSInfo"]["hostname"] = OSInfo[3]
-        result["OSInfo"]["mac"] = []
-        for (let i = 4; i < OSInfo.length; i++) {
-            result["OSInfo"]["mac"].push(OSInfo[i])
-        }
 
         if (platform === "win32") {
             let csproductInfo = infos[2].split(sep)
@@ -288,7 +286,7 @@ async function checkLocalStatus(): Promise<any> {
         versionEqual = data.info.version === infoVersion
         info = await collectInfo(data.info.version)
         if (info !== data.info.data) {
-            let tmpInfo = data.info.data + updateSep + (versionEqual ? info : await collectInfo())
+            let tmpInfo = data.info.data + updateSep + data.sig.data + updateSep + (versionEqual ? info : await collectInfo())
             return {
                 status: "update",
                 info: tmpInfo,
@@ -336,7 +334,7 @@ async function checkLocalStatus(): Promise<any> {
 
 function checkAndPersistSignature(info: string, sig: string, infoVersion: number, validTime : number) {
     try {
-        let idx = info.indexOf(updateSep)
+        let idx = info.lastIndexOf(updateSep)
         if (idx !== -1) {
             info = info.substr(idx + updateSep.length)
         }
