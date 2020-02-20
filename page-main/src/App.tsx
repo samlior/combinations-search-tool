@@ -5,6 +5,7 @@ import { NumberSelectorBoard  } from './NumberSelectorBoard'
 import { SettingsBoard } from './SettingsBoard'
 import { NumberCountBoard } from './NumberCountBoard'
 import { ResultsBoard } from './ResultsBoard'
+import { SumSettings } from './SumSettings'
 
 import { ipc } from './ipc'
 
@@ -40,18 +41,10 @@ export class App extends React.Component<any, any> {
 
     this.handleStart = this.handleStart.bind(this)
     this.handleCopy = this.handleCopy.bind(this)
-    this.handleResultAdd = this.handleResultAdd.bind(this)
-    this.handleResultReduce = this.handleResultReduce.bind(this)
-    this.handlePageRowCountChange = this.handlePageRowCountChange.bind(this)
-    this.hanldePageIndexChange = this.hanldePageIndexChange.bind(this)
-
-    this.handleResultFirst = this.handleResultFirst.bind(this)
-    this.handleResultPrevious = this.handleResultPrevious.bind(this)
-    this.handleResultNext = this.handleResultNext.bind(this)
-    this.handleResultLast = this.handleResultLast.bind(this)
 
     this.makeSettingsBoard = this.makeSettingsBoard.bind(this)
     this.makeNumberCountBoard = this.makeNumberCountBoard.bind(this)
+    this.makeSumSettings = this.makeSumSettings.bind(this)
 
     this.state = {
       totalSelectedStatus: [],
@@ -66,9 +59,6 @@ export class App extends React.Component<any, any> {
       prime: "",
       composite: "",
       linking: "",
-      resultPageCount: 1,
-      resultRowEachPage: -1,
-      resultPageIndex: 1,
       totalResults: []
     }
 
@@ -292,77 +282,6 @@ export class App extends React.Component<any, any> {
     this.setState(state)
   }
 
-  handleResultAdd() {
-    let state: any = this.state
-    state.resultPageCount++
-    this.setState(state)
-  }
-
-  handleResultReduce() {
-    let state: any = this.state
-    if (state.resultPageCount >= 2) {
-      state.resultPageCount--
-      this.setState(state)
-    }
-  }
-
-  handlePageRowCountChange(event: any) {
-    let state: any = this.state
-    let num: number = Number(event.target.value)
-    if (num === state.resultRowEachPage || num < 1) {
-      return
-    }
-    state.resultRowEachPage = Number(event.target.value)
-    this.setState(state)
-  }
-
-  hanldePageIndexChange(event: any) {
-    let state: any = this.state
-    let num: number = Number(event.target.value)
-    if (num === state.resultPageIndex || num < 1 ||
-      num > Math.ceil(this.state.totalResults.length / this.state.resultRowEachPage)) {
-      return
-    }
-    state.resultPageIndex = num
-    this.setState(state)
-  }
-
-  handleResultFirst() {
-    let event = {
-      target: {
-        value: 1
-      }
-    }
-    this.hanldePageIndexChange(event)
-  }
-
-  handleResultPrevious() {
-    let event = {
-      target: {
-        value: this.state.resultPageIndex - 1
-      }
-    }
-    this.hanldePageIndexChange(event)
-  }
-
-  handleResultNext() {
-    let event = {
-      target: {
-        value: this.state.resultPageIndex + 1
-      }
-    }
-    this.hanldePageIndexChange(event)
-  }
-
-  handleResultLast() {
-    let event = {
-      target: {
-        value: Math.ceil(this.state.totalResults.length / this.state.resultRowEachPage)
-      }
-    }
-    this.hanldePageIndexChange(event)
-  }
-
   handleStart() {
 
     ipc.api("checkLocalStatus").then(
@@ -419,10 +338,8 @@ export class App extends React.Component<any, any> {
   }
 
   handleCopy() {
-    let results = this.makeResults()
-    if (results.length > 0) {
-      ipc.apiSend("copyData", results[0])
-    }
+    let result = this.makeResult()
+    ipc.apiSend("copyData", result)
   }
 
   makeResultLine(result: number[]): string {
@@ -437,35 +354,15 @@ export class App extends React.Component<any, any> {
     return str.substr(0, str.length - 2)
   }
 
-  makeResults(): string[] {
-    let pageIndex = this.state.resultPageIndex - 1
-    let state: any = this.state
-    let results: string[] = []
-    if (state.resultRowEachPage !== -1) {
-      let index: number = pageIndex * state.resultRowEachPage
-      while (results.length < state.resultPageCount) {
-        let result: string = ""
-        for (let i = index; i < state.totalResults.length && i < index + state.resultRowEachPage; i++) {
-          result += this.makeResultLine(state.totalResults[i]) + "\n"
-        }
-        if (result.length !== 0) {
-          result = result.substr(0, result.length - 1)
-        }
-        results.push(result)
-        index += state.resultRowEachPage
-      }
+  makeResult(): string {
+    let result: string = ""
+    for (let i = 0; i < this.state.totalResults.length; i++) {
+      result += this.makeResultLine(this.state.totalResults[i]) + "\n"
     }
-    else {
-      let result: string = ""
-      for (let i = 0; i < state.totalResults.length; i++) {
-        result += this.makeResultLine(state.totalResults[i]) + "\n"
-      }
-      if (result.length !== 0) {
-        result = result.substr(0, result.length - 1)
-      }
-      results.push(result)
+    if (result.length !== 0) {
+      result = result.substr(0, result.length - 1)
     }
-    return results
+    return result
   }
 
   makeSettingsBoard() {
@@ -476,6 +373,12 @@ export class App extends React.Component<any, any> {
         onTotalCountChange={this.handleTotalCountChange}
         onSelectCountChange={this.handleSelectCountChange}
         onSettingsConfirm={this.handleSettingsConfirm}/>
+    )
+  }
+
+  makeSumSettings() {
+    return (
+      <SumSettings />
     )
   }
 
@@ -519,26 +422,16 @@ export class App extends React.Component<any, any> {
             onNumberSelectedDelete={this.handleNumberSelectedDelete}
             onNumberSelectedAdd={this.handleNumberSelectedAdd}
             onRangeSelected={this.handleRangeSelected}
+
             makeSettingsBoard={this.makeSettingsBoard}
-            makeNumberCountBoard={this.makeNumberCountBoard} />
+            makeNumberCountBoard={this.makeNumberCountBoard}
+            makeSumSettings={this.makeSumSettings} />
           <ResultsBoard
-            results={this.makeResults()}
-            pageIndex={this.state.resultPageIndex}
+            result={this.makeResult()}
             totalResultCount={this.state.totalResults.length}
-            totalPageCount={Math.ceil(this.state.totalResults.length / this.state.resultRowEachPage)}
-            pageRowCount={this.state.resultRowEachPage}
 
             onStart={this.handleStart}
-            onCopy={this.handleCopy}
-            onPageRowCountChange={this.handlePageRowCountChange}
-            onPageIndexChange={this.hanldePageIndexChange}
-            onResultAdd={this.handleResultAdd}
-            onResultReduce={this.handleResultReduce}
-            
-            onResultFirst={this.handleResultFirst}
-            onResultPrevious={this.handleResultPrevious}
-            onResultNext={this.handleResultNext}
-            onResultLast={this.handleResultLast}/>
+            onCopy={this.handleCopy} />
       </div>
     )
   }

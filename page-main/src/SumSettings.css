@@ -1,4 +1,4 @@
-.div-number-count-board
+.div-sum-settings
 {
     background-color: rgb(29,30,32);
     padding: 15px;
@@ -8,35 +8,54 @@
     height: 240px;
     margin-left: 15px;
     margin-top: 15px;
-    display: inline-block;
-    align-self: flex-start;
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
 }
 
-.div-number-count-board-line
+.div-sum-settings-line
 {
     display: flex;
     margin-top: 10px;
 }
 
-.input-number-number-count-board
+.div-sum-settings-first-line
+{
+    display: flex;
+}
+
+.input-text-sum-settings-min
+{
+    outline: none;
+    border: none;
+    border-radius: 8px;
+    width: 20%;
+    text-align: center;
+    margin-left: 5px;
+    margin-right: 3px;
+    height: 20px;
+}
+
+.input-text-sum-settings-max
 {
     outline: none;
     border: none;
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
-    width: 35%;
+    width: 20%;
     text-align: center;
-    margin-left: 5px;
+    margin-left: 4px;
     height: 20px;
 }
 
-.button-number-count-board
+.button-sum-settings
 {
     width: 20%;
     margin-left: 3px;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
-    outline:none;
+    outline: none;
     border: none;
     color: rgb(32,33,36);
     background-color: rgb(80,250,123);
@@ -45,12 +64,12 @@
     height: 23px;
 }
 
-.button-number-count-board:hover
+.button-sum-settings:hover
 {
     background-color: rgb(5, 179, 48);
 }
 
-.button-number-count-board:active
+.button-sum-settings:active
 {
     background-color: rgb(26,27,29);
     color: white;

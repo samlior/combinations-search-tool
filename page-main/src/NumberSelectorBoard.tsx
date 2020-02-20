@@ -5,9 +5,12 @@ import { NumberSelector } from './NumberSelector';
 
 export class NumberSelectorBoard extends React.Component<any, any> {
     render() {
+        let other: any[] = []
+        other.push(this.props.makeSettingsBoard())
+        other.push(this.props.makeNumberCountBoard())
+        other.push(this.props.makeSumSettings())
+
         let selectors: any[] = []
-        selectors.push(this.props.makeSettingsBoard())
-        selectors.push(this.props.makeNumberCountBoard())
         for (let i = 0; i < this.props.rulesCount; i++) {
             selectors.push(
                 <NumberSelector 
@@ -54,6 +57,9 @@ export class NumberSelectorBoard extends React.Component<any, any> {
         return (
             <div>
                 <span className="span-number-selector-board">当前条件总数: {this.props.rulesCount}</span>
+                <div className="div-number-selector-board">
+                    {other}
+                </div>
                 <div className="div-number-selector-board">
                     {selectors}
                 </div>
