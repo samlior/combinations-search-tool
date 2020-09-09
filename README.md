@@ -1,4 +1,4 @@
-### Overview
+# Overview
 
 组合检索工具, 用于查询符合条件的双色球彩票结果
 
@@ -11,7 +11,7 @@
 
 **特别申明: 本人并不相信这些玄学操作...在某人要求下实现此工具而已**
 
-### Build
+# Build
 
 ```
 git clone https://github.com/samlior/combinations-search-tool.git
@@ -30,6 +30,6 @@ cd ..
 npm start
 ```
 
-### Contact info
+# Contact info
 
 + 如有任何问题, 请联系邮箱samlior@foxmail.com
