@@ -174,7 +174,7 @@ let template: any = [{
           dialog.showMessageBox(mainWindow, {
             type: "info",
             buttons: ["ok"],
-            message: `版本: ${settings.version}\n作者: Alexier, Samlior\n邮箱: samlior@foxmail.com\n微信号: ${settings.wechatCode}\n\nPowered by Electron, React and Typescript.`,
+            message: `版本: ${settings.version}\n作者: Samlior\n邮箱: samlior@foxmail.com\n微信号: ${settings.wechatCode}\n\nPowered by Electron, React and Typescript.`,
             title: "关于此软件"
           })
         }

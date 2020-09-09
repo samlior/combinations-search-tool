@@ -25,3 +25,17 @@ yarn-error.log*
 
 /out-win-asar
 /out-darwin-asar
+
+/.vscode
+/build/
+package-lock.json
+page-activate/build/
+page-activate/node_modules/
+page-activate/package-lock.json
+page-agreement/build/
+page-agreement/node_modules/
+page-agreement/package-lock.json
+page-main/build/
+page-main/node_modules/
+page-main/package-lock.json
+page-main/src/react-app-env.d.ts
